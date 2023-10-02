@@ -1,6 +1,6 @@
 Sample scripts and templates for setting up the system database of a SEEBURGER BIS 6.7 installation.
 
-## Subdirectory
+## Subdirectories
 
 Find the DB specific scripts in the following sub directories.
 
