@@ -1,0 +1,17 @@
+# demo1-namespace.yaml - sample kubectl resource definition for BIS namespaces
+#
+# Revision: 2023-10-02
+#
+# Copyright 2023 SEEBURGER AG, Germany. All rights reserved.
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    seeburger.com/product=bis
+    environment: demo
+    field.cattle.io/projectId=p-5vlf7
+  annotations:
+    contact: team@example.com
+    field.cattle.io/description: "Team's demonstration system using SEEBURGER BIS6"
+    field.cattle.io/projectId: c-m-h7x9lplk:p-5vlf7
+  name: team-demo1

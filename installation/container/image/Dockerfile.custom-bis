@@ -1,0 +1,36 @@
+# Dockerfile.custom-bis - Creating custom BIS images
+# Copyright 2022-2023 SEEBURGER AG, Germany. All rights reserved.
+#
+# Revision: 2023-10-02
+#
+# Modify the registry location of the upstream image if you
+# mirror it to your own private repository. Use fixed versions
+# to ensure the image is reviewed before building with a new version
+#
+ARG BIS_VERSION=6.7.146
+FROM eu.oci-reg.seeburger.de/seeburger/bis:${BIS_VERSION}
+ARG BIS_VERSION
+
+# Executed like:
+#  docker build -t seeburger/custom-bis:6.7.146.custom1.RC --build-arg BIS_VERSION=6.7.146 .
+
+# it reads resources relative to the build directory.
+# Use .dockerignore to make sure only intended files are in context
+ADD --chown=seeasown:seeadm --chmod=755 ./src/main/container/ /opt/seeburger/bis
+
+# Alternatively you can package all resources in an archive, relative
+# ADD --chown=seeasown:seeadm --chmod=755 src/main/container/archive.zip /opt/seeburger/bis
+# If you need to execute build commands, use a "COPY --from=build" step instead
+
+# Overwrite at least the following labels to make
+# changed responsibilities clear
+LABEL org.opencontainers.image.authors="Your Department <support@example.com>"
+LABEL org.opencontainers.image.vendor="SEEBURGER AG, Germany - customized by COMPANY"
+LABEL org.opencontainers.image.title="SEEBURGER BIS6 (customized ${BIS_VERSION})"
+LABEL authoritative-source-url=yourregistry.company.com/seeburger/custom-bis
+LABEL distribution-scope=private
+
+# The following directives should not be modified
+#WORKDIR, USER, CMD
+
+#EOF
