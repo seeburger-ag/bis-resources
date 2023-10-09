@@ -7,4 +7,5 @@ Respources (scripts, templates) provided for installing *SEEBURGER BIS 6.7* soft
 
 ## See also
 
-See the *SEEBURGER BIS6 Installation Manual* for an overview of the installation procedure.
+See the **SEEBURGER BIS6 Installation Manual** for an overview of
+the installation procedure.
