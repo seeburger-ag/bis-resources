@@ -36,7 +36,8 @@ import org.testcontainers.containers.MSSQLServerContainer;
  * This test will use MS SQL Server Database in Testcontainer to apply the
  * sample scripts and validate that they are in effect.
  */
-class MSSQLServerTests {
+class MSSQLServerTests
+{
     private static final String OWNPASS = "Secret12345";
     private static final String RUNPASS = "Secret1234";
 
@@ -46,7 +47,8 @@ class MSSQLServerTests {
 
     @BeforeAll
     static void setUpBeforeClass()
-            throws Exception {
+            throws Exception
+    {
         System.out.println("Starting container...");
 
         // we do this here to not hide the fail reason in Initializer Exception
@@ -59,8 +61,10 @@ class MSSQLServerTests {
 
     @AfterAll
     static void afterClass()
-            throws Exception {
-        if (dbContainer != null) {
+            throws Exception
+    {
+        if (dbContainer != null)
+        {
             var tmp = dbContainer;
             dbContainer = null;
 
@@ -71,21 +75,21 @@ class MSSQLServerTests {
     }
 
     @Test
-    void testCreateDatabase() throws UnsupportedOperationException, IOException, InterruptedException, SQLException {
-        // we need to run in PDB and not use OMF, also can use smaller files
+    void testCreateDatabase() throws UnsupportedOperationException, IOException, InterruptedException, SQLException
+    {
         adjustAndTransferFile("create-database.sql",
-                "ownpass secret", "ownpass " + OWNPASS,
-                // configure file location
-                "-- :setvar dir \"C:\\Program Files\\Microsoft SQL Server\\MSSQL15.PROD\\MSSQL\\DATA\\\"", ":setvar dir \"/var/opt/mssql/data/\"",
-                // these particular warnings should not trigger assert
-                "WARNING: Edition", "W: Edition",
-                // unify end message for assert
-                "Finished create-database.", "Finished.");
+            "ownpass secret", "ownpass " + OWNPASS,
+            // configure file location
+            "-- :setvar dir \"C:\\Program Files\\Microsoft SQL Server\\MSSQL15.PROD\\MSSQL\\DATA\\\"", ":setvar dir \"/var/opt/mssql/data/\"",
+            // these particular warnings should not trigger assert
+            "WARNING: Edition", "W: Edition",
+            // unify end message for assert
+            "Finished create-database.", "Finished.");
 
         adjustAndTransferFile("create-user.sql",
-                "runpass secret", "runpass " + RUNPASS,
-                // unify end message for assert
-                "Finished create-user.", "Finished.");
+            "runpass secret", "runpass " + RUNPASS,
+            // unify end message for assert
+            "Finished create-user.", "Finished.");
 
         var sa = "-U"+dbContainer.getUsername()+" -P"+dbContainer.getPassword();
         executeScript(sa, "create-database.sql");
@@ -96,22 +100,25 @@ class MSSQLServerTests {
 
         // test db owner can login and create a table
         try (Connection c = DriverManager.getConnection(url, "seeasdb0", OWNPASS);
-                Statement s = c.createStatement();) {
+                Statement s = c.createStatement();)        
+        {
             s.executeUpdate("CREATE TABLE tTest(cTest VARCHAR(256))");
         }
 
         // test runtimew user can login and select the new table
         try (Connection c = DriverManager.getConnection(url, "seerun0", RUNPASS);
-                Statement s = c.createStatement();) {
+                Statement s = c.createStatement();)
+        {
             // this also validated the search path finds the table
-            try (var r = s.executeQuery("SELECT cTest from tTest");) {
-            }
+            try (var r = s.executeQuery("SELECT cTest from tTest");) { /* empty */}
         }
     }
 
     /** Copy the file(s) from base directory to container /tmp. */
-    private void transferFiles(String... files) {
-        for (String f : files) {
+    private void transferFiles(String... files)
+    {
+        for (String f : files)
+        {
             MountableFile mf = MountableFile.forHostPath(BASE + f);
             dbContainer.copyFileToContainer(mf, "/tmp/" + f);
         }
@@ -152,7 +159,8 @@ class MSSQLServerTests {
      * @param file  sql file name in /tmp directory in container
      */
     private void executeScript(String login, String file)
-            throws UnsupportedOperationException, IOException, InterruptedException {
+            throws UnsupportedOperationException, IOException, InterruptedException
+    {
         System.out.println("Executing " + file + " as " + login);
 
         ExecResult r = dbContainer.execInContainer("bash", "-ce",
