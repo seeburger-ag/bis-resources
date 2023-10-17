@@ -1,0 +1,131 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.seeburger.doc.bis6resoures</groupId>
+    <artifactId>bis6resources-tests</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Testing bis6-resources (installation scripts) with Testcontainers.</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+    </properties>
+
+    <dependencies>
+        <!-- Required as long as OraceFreeContainer is not in testcontainers-java -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.13.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- testcontainer/docker has conflicting versions -->
+        <dependency>
+            <artifactId>slf4j-api</artifactId>
+            <groupId>org.slf4j</groupId>
+            <version>1.7.36</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- make slf4j not complain (configure: -Dorg.slf4j.simpleLogger.defaultLogLevel=info) -->
+        <dependency>
+            <artifactId>slf4j-simple</artifactId>
+            <groupId>org.slf4j</groupId>
+            <version>1.7.36</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- testcontainer modules for testing various RDBMS -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.19.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>oracle-xe</artifactId>
+            <version>1.19.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.19.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mssqlserver</artifactId>
+            <version>1.19.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.7.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JDBC drivers for testing -->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc11</artifactId>
+            <version>23.3.0.23.09</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>12.4.1.jre11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- since Gitub default Maven is 3.8 we need a compiler who knows release -->
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                </plugin>
+                <!-- since Gitub default Maven is 3.8 we need a surefire who detects test -->
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <inceptionYear>2023</inceptionYear>
+    <organization>
+        <name>SEEBURGER AG, Germany</name>
+        <url>https://github.com/seeburger-ag/</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://spdx.org/licenses/MIT.html</url>
+            <comments>Applies to OracleFreeContainer.java</comments>
+        </license>
+        <license>
+            <name>ASL-2.0</name>
+            <comments>Applies to files in tests/ directory</comments>
+            <url>https://spdx.org/licenses/Apache-2.0.html</url>
+        </license>
+        <license>
+            <name>SEEBURGER Proprietary</name>
+            <distribution>manual</distribution>
+            <comments>See /LICENSE.txt</comments>
+            <url>/LICENSE.txt</url>
+        </license>
+    </licenses>
+</project>

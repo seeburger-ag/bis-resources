@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
 
-name: Java CI with Maven
+name: "Verify Resources (java-maven CI)"
 
 on:
   push:
@@ -10,12 +10,13 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  verify:
 
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check our Repository
+
+    - name: Check out Repository
       uses: actions/checkout@v4
       
     - name: Set up JDK 21
@@ -24,9 +25,12 @@ jobs:
         java-version: '21'
         distribution: 'zulu'
         cache: maven
-    - name: Build with Maven
-      run: cd tests/ && mvn -B -npr verify
+
+    - name: Run Maven (verify)
+      run: cd tests/ && mvn -B -V -ntp -e verify
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@c5ad0fd6b977364190852883b46728f25a9617c3
+      with:
+        directory: tests/
