@@ -86,8 +86,6 @@ class OracleTests
         adjustAndTransferFile("create-user.sql",
             "-- ALTER SESSION SET CONTAINER=\"PDBSEEBIS\";", "ALTER SESSION SET CONTAINER=\"FREEPDB1\";");
 
-        //transferFiles("grant-runtime-user.sql");
-
         executeScript("/ AS SYSDBA", "create-tbs.sql");
         executeScript("/ AS SYSDBA", "create-roles.sql");
         executeScript("/ AS SYSDBA", "create-schema.sql");
@@ -183,6 +181,3 @@ class OracleTests
         //System.out.println(">> result " + result);
     }
 }
-
-
-

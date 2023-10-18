@@ -73,7 +73,6 @@ class PosgresTests
     @Test
     void testCreateDatabase() throws UnsupportedOperationException, IOException, InterruptedException, SQLException
     {
-        // we need to run in PDB and not use OMF, also can use smaller files
         adjustAndTransferFile("seetst-ddl.sql",
             "\\prompt 'Enter new owner - user password: ' owner_pass", "\\set owner_pass 'secret'",
             "\\prompt 'Enter new runtime-user password: ' runtime_pass", "\\set runtime_pass 'secret'");
@@ -96,7 +95,7 @@ class PosgresTests
             Statement s = c.createStatement(); )
         {
             // this also validated the search path finds the table
-            try(var r = s.executeQuery("SELECT cTest from tTest");) { }
+            try(var r = s.executeQuery("SELECT cTest from tTest");) { /* empty */}
         }
     }
 
