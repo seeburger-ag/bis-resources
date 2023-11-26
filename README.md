@@ -3,6 +3,7 @@ Official resources for *SEEBURGER BIS 6.7* customers.
 ## Repository Structure
 
 * [`installation`](installation/) - scripts and templates mentioned in the **SEEBURGER BIS6 Installation Manual** and the **BIS6 System Database Manual**.
+* [`examples`](examples/) - example resources for different development and operational topics.
 * [`tests`](tests/) - Maven/Java project used to test some of the resources in this repository.
 * [`.github/`](.github/) - CI automation control files for GitHub repository hosting.
 
