@@ -1,0 +1,67 @@
+/* 
+ * gate.bsh - Sample script for SEEBURGER BIS Scheduler (gate functionality).
+ * 
+ * Copyright SEEBURGER AG, Germany. All rights reserved.
+ */
+
+// some application packages are available for scheduler scripts
+// packages are available in DevStudio's Maven Repository from BLM
+import com.seeburger.logger.common.LoggerBuilder;
+import com.seeburger.logger.common.Logger;
+import com.seeburger.script.IExecutor;
+import com.seeburger.script.exc.ScriptException;
+
+// most of java runtime is available
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Objects;
+
+// the class declaration will be removed to become a beanshell script
+///public class GateScript implements IExecutor
+///{
+
+    // gate scripts do not use all parameters, but function must declare them
+    public void execute(InputStream ignore0, OutputStream ignore1,
+                        HashMap inParams, HashMap outParams,
+                        OutputStream ignore2, String ignore3)
+        throws ScriptException
+    {
+        // dont use statics/fields, define only local variables, for example logger:
+        final Logger LOG = LoggerBuilder.getLogger(this.getClass()); // SeeLogger logs in bsh.XThis
+
+        // extract the standard parameters given
+        String timezone = inParams.get("timeseries.timezone");
+        String taskName = inParams.get("task.name");
+        String id = inParams.get("task.id");
+        String env = inParams.get("scheduler.taskenv");
+
+        LOG.info("Running gate script of taskname={0} (id={1} LS={2} tz={3}).", taskName, id, env, timezone);
+
+        // if doing time calculations, you want to do them relative to timezone of site
+        final ZoneId zoneId = ZoneId.of(Objects.requireNonNullElse(timezone, "Etc/UTC"));
+        final ZonedDateTime now = ZonedDateTime.ofInstant(Instant.now(), zoneId);
+
+        // sample error condition
+        if (now.getYear() > 2025)
+        {
+            // the exception message will be shown in the Scheduler Execution History
+            throw new ScriptException("This script is not ready for the future. year=" + now.getYear() + " > 2025");
+        }
+
+        // sample skip condition: skip every first friday of month
+        if (now.getDayOfWeek() == DayOfWeek.FRIDAY && now.dayOfMonth() < 7)
+        {
+            outParams.put("reason", "Skipping execution on first friday each month by gate script.");
+            outParams.put("result", "0"); // 0 = skipped by user
+            return;
+        }
+
+        // Important: set the result to run, if outParams are empty it will skip
+        outParams.put("result", "1"); // 1 = execute
+    }
+///} // end class

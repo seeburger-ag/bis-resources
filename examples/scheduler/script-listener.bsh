@@ -1,0 +1,59 @@
+/*
+ * script-listener.bsh - Sample script for SEEBURGER BIS Scheduler (script listener).
+ *
+ * Copyright SEEBURGER AG, Germany. All rights reserved.
+ */
+
+// some application packages are available for scheduler scripts
+// packages are available in DevStudio's Maven Repository from BLM
+import com.seeburger.logger.common.Logger;
+import com.seeburger.scheduler.SchedulerException;
+import com.seeburger.scheduler.engine.TickEvent;
+import com.seeburger.scheduler.listener.ISchedulerListener;
+
+// the class declaration will be removed to become a beanshell script
+///class SchedulerScriptListener implements com.seeburger.scheduler.listener.ISchedulerListener
+///{
+
+    // Information about task to execute is in tickEvent
+    public void onTick(TickEvent tickEvent)
+        throws SchedulerException
+    {
+        // dont use statics/fields, define only local variables
+        // for this task execution the logger is handed to you:
+        Logger log = tickEvent.getLogger();
+
+        String taskName = tickEvent.getTaskName();
+
+        // Map<String,Object> - bsh has no generics
+        Map paramsMap = tickEvent.getListenerConfigurationAsMap();
+        String env = get(paramsMap, "scheduler.taskenv"); // "000"
+        String script = get(paramsMap, "scriptFileName"); // "scheduler/script-listener.bsh"
+        String tz = get(paramsMap, "timeseries.timezone"); // "Europe/Berlin"
+        String executionType = get(paramsMap, "task.executiontype"); // "Each"
+        String monitoring = get(paramsMap, "task.monitoring"); // false
+
+        // this is the string parameter specified in the Script Listener form
+        String param = tickEvent.getListenerConf();
+
+        log.info("Executing {0} (LS={1}) with script={2} param={3}",
+                 taskName, env, script, param);
+
+        // when this method returns without exception, the task is marked as succeeded
+    }
+
+    /** Cast to String and check existence. */
+    String get(Map map, String key)
+    {
+        // this demonstrates how you can call functions inside beanshell
+        // and how to handle Generics
+        Object value = map.get(key);
+        if (value == null)
+        {
+            throw new RuntimeException("The key=" + key + " was missing.");
+        }
+
+        return String.valueOf(value); // task.monitoring is Boolean
+    }
+
+///} // end class
