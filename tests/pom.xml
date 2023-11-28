@@ -15,13 +15,6 @@
     </properties>
 
     <dependencies>
-        <!-- Required as long as OraceFreeContainer is not in testcontainers-java -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.13.0</version>
-            <scope>test</scope>
-        </dependency>
         <!-- testcontainer/docker has conflicting versions -->
         <dependency>
             <artifactId>slf4j-api</artifactId>
@@ -45,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>oracle-xe</artifactId>
+            <artifactId>oracle-free</artifactId>
             <version>${version.testcontainers}</version>
             <scope>test</scope>
         </dependency>

@@ -25,8 +25,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.Container.ExecResult;
+import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
-import org.testcontainers.containers.OracleFreeContainer;
+import org.testcontainers.oracle.OracleContainer;
 
 /**
  * Testing the installation/systemdatabase/oracle/*.sql DDL scripts
@@ -38,7 +39,7 @@ class OracleTests
 {
     static final private String BASE = "../installation/systemdatabase/oracle/";
 
-    static OracleFreeContainer dbContainer = null;
+    static OracleContainer dbContainer = null;
 
     @BeforeAll
     static void setUpBeforeClass()
@@ -46,9 +47,12 @@ class OracleTests
     {
         System.out.println("Starting container...");
 
+        // https://container-registry.oracle.com/ords/
+        // DockerImageName name = DockerImageName.parse("container-registry.oracle.com/database/free:23.3.0.0").asCompatibleSubstituteFor("gvenzl/oracle-free");
+        DockerImageName name = DockerImageName.parse("gvenzl/oracle-free:latest");
+
         // we do this here to not hide the fail reason in Initializer Exception
-        //DockerImageName name = DockerImageName.parse("container-registry.oracle.com/database/free:latest").asCompatibleSubstituteFor("gvenzl/oracle-xe");
-        dbContainer = new OracleFreeContainer();
+        dbContainer = new OracleContainer(name);
 
         dbContainer.start();
         System.out.println("done.");

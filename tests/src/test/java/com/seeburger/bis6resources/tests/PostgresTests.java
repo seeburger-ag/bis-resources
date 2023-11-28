@@ -48,8 +48,7 @@ class PosgresTests
         System.out.println("Starting container...");
 
         // we do this here to not hide the fail reason in Initializer Exception
-        //DockerImageName name = DockerImageName.parse("postgres:13");
-        dbContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:13"));
+        dbContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:15"));
 
         dbContainer.start();
         System.out.println("done.");
