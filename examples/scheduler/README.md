@@ -33,9 +33,9 @@ You can also deploy the script with the help of the Developer Studio, which will
 
 Deployable ZIPs can be uploaded to the Deployment Manager.
 
-## Using the script-listener.bsh
+## Using the script-listener.bsh sample
 
-Upload the script (as described above) to 000/scripts/bsh/scheduler/script-listener.bsh` and add a new Task with the Listener Type "ScriptListener". Fill in the **Script Name** `scheduler/script-listener.bsh` and give it a sample string parameter.
+Upload the script (as described above) to `000/scripts/bsh/scheduler/script-listener.bsh` and add a new Task with the Listener Type "ScriptListener". Fill in the **Script Name** `scheduler/script-listener.bsh` and give it a sample string parameter.
 
 This script implements the method `onTick` as prescribed by the `com.seeburger.scheduler.listener.ISchedulerListener` interface:
 
