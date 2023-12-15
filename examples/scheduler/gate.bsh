@@ -1,6 +1,6 @@
-/* 
+/*
  * gate.bsh - Sample script for SEEBURGER BIS Scheduler (gate functionality).
- * 
+ *
  * Copyright SEEBURGER AG, Germany. All rights reserved.
  */
 
@@ -47,10 +47,10 @@ import java.util.Objects;
         final ZonedDateTime now = ZonedDateTime.ofInstant(Instant.now(), zoneId);
 
         // sample error condition
-        if (now.getYear() > 2025)
+        if (now.getYear() < 2022)
         {
             // the exception message will be shown in the Scheduler Execution History
-            throw new ScriptException("This script is not ready for the future. year=" + now.getYear() + " > 2025");
+            throw new ScriptException("This script is not ready for the past. year=" + now.getYear() + " < 2022");
         }
 
         // sample skip condition: skip every first friday of month
