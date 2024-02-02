@@ -1,6 +1,5 @@
-Copyright 2010-2023 SEEBURGER AG, All rights reserved.
+Copyright 2010-2024 SEEBURGER AG, Germany. All rights reserved.
 
-Files in this repository are provided as-is to be adapted and used
-in customer installations in combination with SEEBURGER products.
+Files in this repository are provided as-is to be adapted and used in customer installations in combination with SEEBURGER products.
 
 If you need permission to redistribute files, please contact SEEBURGER.
