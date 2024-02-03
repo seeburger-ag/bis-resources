@@ -1,5 +1,17 @@
-Copyright 2010-2024 SEEBURGER AG, Germany. All rights reserved.
+© Copyright 2010-2024 SEEBURGER AG, Germany. All rights reserved.
 
-Files in this repository are provided as-is to be adapted and used in customer installations in combination with SEEBURGER products.
+All work in this repository is provided ​“AS IS”.
+SEEBURGER makes no other warranties, express or implied,
+and hereby disclaims all implied warranties,
+including any warranty of merchantability and warranty
+of fitness for a particular purpose.
+
+The example files are free to use by customers in combination
+with SEEBURGER products.
 
 If you need permission to redistribute files, please contact SEEBURGER.
+
+
+The testcode and resouces in the /tests
+directory are licensed under
+the Apache License 2.0 (https://spdx.org/licenses/Apache-2.0.html)

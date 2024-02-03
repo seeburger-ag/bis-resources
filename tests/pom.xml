@@ -107,11 +107,6 @@
     </organization>
     <licenses>
         <license>
-            <name>MIT License</name>
-            <url>https://spdx.org/licenses/MIT.html</url>
-            <comments>Applies to OracleFreeContainer.java</comments>
-        </license>
-        <license>
             <name>ASL-2.0</name>
             <comments>Applies to files in tests/ directory</comments>
             <url>https://spdx.org/licenses/Apache-2.0.html</url>
