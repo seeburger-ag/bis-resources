@@ -1,0 +1,57 @@
+/*
+ * sample-transform.bsh - Sample script for SEEBURGER BIS Transformer component.
+ *
+ * Copyright 2024 SEEBURGER AG, Germany. All rights reserved.
+ */
+
+// some application packages are available for scheduler scripts
+// packages are available in DevStudio's Maven Repository from BLM
+import com.seeburger.components.transformer.ITransformerScript;
+import com.seeburger.components.transformer.TransformerScriptResult;
+import com.seeburger.logger.common.Logger;
+import com.seeburger.logger.common.LoggerBuilder;
+import com.seeburger.script.exc.ScriptException;
+
+// for method signature
+import java.io.InputStream;
+import java.util.HashMap;
+
+// most of other Java runtime classes are available
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+
+
+// the class declaration will be removed to become a beanshell script
+///public class sample-transform.bsh implements ITransformerScript
+///{
+
+    public TransformerScriptResult transform(InputStream inStream, HashMap inParams)
+        throws ScriptException
+    {
+        // dont use statics/fields, define only local variables, for example logger:
+        final Logger LOG = LoggerBuilder.getLogger(this.getClass()); // SeeLogger logs in bsh.XThis
+
+        // example how to access logging and input parameters
+        if (inParams != null)
+	    {
+            LOG.info("sample-transformer.bsh: Parameterts: {}", inParams.toString());
+        }
+
+        // to write output, get a new stream from the result object
+        TransformerScriptResult result = new TransformerScriptResult();
+        OutputStream outStream = result.getOutputStream(); // remebers DynamicOutputStream
+        
+        //TODO custom transformations reading from inStream.
+	    Writer outWriter = new OutputStreamWriter(outStream, StandardCharsets.UTF_8);
+        outWriter.write("This is the attachment created by transformer.bsh");
+        outWriter.close();
+	    // TODO attachment encoding
+        // sample output properties
+	    scriptResult.addResultParam("resultKey", "resultValue");
+
+        return scriptResult;
+    }
+
+///}  // end class

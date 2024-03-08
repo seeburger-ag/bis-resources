@@ -1,0 +1,23 @@
+<template>
+  <favorites> 
+    <favorite id="tradeFinishedFav">
+      <name>Trade Started</name>
+      <description>Started Trade processes</description>
+      <value>bisprocessmonitor~bisprocessmonitor-search/last=86400000/sort=tid/filter=aW5pdGlhdG9yPUZpbGUgQ29udHJvbGxlcg</value>
+    </favorite>   
+    <favorite id="tradeErrorFav">
+      <name>Trade Error</name>
+      <description>Error Trade processes</description>
+      <value>bisprocessmonitor~bisprocessmonitor-search/last=86400000/sort=tid/filter=aW5pdGlhdG9yPUZpbGUgQ29udHJvbGxlcg</value>
+    </favorite>   
+  </favorites>
+  <folders>
+    <folder name="Trade Searches">
+      <description>Searches related to Trade custom solution.</description>
+      <favorites-ref> 
+        <favorite-ref id="tradeErrorFav" />
+        <favorite-ref id="tradeFinishedFav" />
+      </favorites-ref>
+    </folder>
+  </folders>
+</template>

@@ -1,0 +1,51 @@
+<profiles>
+    <profile>
+        <name>Trade</name>
+        <description>Sample search profile for BIS Monitoring based on standard columns.</description>
+        <column-configurations>
+            <!-- status column might be added unconditionally -->
+            <column-configuration visible="true">
+                <key>process-start-time-long</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>process-end-time-long</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>end-time-long</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>process-name</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>initiator</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>process-trigger</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>process-type</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>process-status</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>tid</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>initiator-subject</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>initiator-file-name</key>
+            </column-configuration>
+            <column-configuration visible="true">
+                <key>info4</key>
+            </column-configuration>
+        </column-configurations>
+        <translations>
+            <translation locale="en"
+                path="customer/portal/monitoring/trade_en.seenls" />
+            <translation locale="de"
+                path="customer/portal/monitoring/trade_de.seenls" />
+        </translations>
+    </profile>
+</profiles>
