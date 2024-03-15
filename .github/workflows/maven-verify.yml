@@ -25,6 +25,7 @@ jobs:
         java-version: '21'
         distribution: 'zulu'
         cache: maven
+        cache-dependency-path: '.github/workflows/maven-verify.yml' # #48: 'tests/pom.xml'
 
     - name: Run Maven (verify)
       run: cd tests/ && mvn -B -V -ntp -e verify
