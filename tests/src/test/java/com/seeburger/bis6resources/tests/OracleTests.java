@@ -51,7 +51,7 @@ class OracleTests
         // https://container-registry.oracle.com/ords/
         // DockerImageName name = DockerImageName.parse("container-registry.oracle.com/database/free:23.3.0.0").asCompatibleSubstituteFor("gvenzl/oracle-free");
         // avoid Docker Hub:
-        DockerImageName name = DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23-slim");
+        DockerImageName name = DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23-slim").asCompatibleSubstituteFor("gvenzl/oracle-free");;
 
         // we do this here to not hide the fail reason in Initializer Exception
         dbContainer = new OracleContainer(name);
