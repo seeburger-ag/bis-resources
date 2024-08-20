@@ -94,7 +94,7 @@
                 <!-- since Gitub default Maven is 3.8 we need a surefire who detects test -->
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.4.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
