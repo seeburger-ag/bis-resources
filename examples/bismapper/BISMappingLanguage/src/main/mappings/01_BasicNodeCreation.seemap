@@ -1,0 +1,26 @@
+(:
+BasicNodeCreation.seemap
+created at 2024-04-17 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    output := "Hello, World!"
+
+    (:
+        Exercise:
+
+        1. Create another complex child node named "myNode" under root
+        2. Create a value assignment inside "myNode"
+
+        Expected output:
+
+        <root>
+            <output>Hello, World!</output>
+            <myNode>
+                <value>Hi!</value>
+            </myNode>
+        </root>
+    :)
+}

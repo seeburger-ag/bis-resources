@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StoreSalesData>
+    <Shops>
+        <Shop id="42">
+            <ShopAddress>
+                <Name>Shop Floor Berlin</Name>
+                <City>Berlin</City>
+                <Street>Mehr-Weg 1</Street>
+                <PostalCode>10115</PostalCode>
+                <CountryCodeIso>DE</CountryCodeIso>
+            </ShopAddress>
+        </Shop>
+        <Shop id="23">
+            <ShopAddress>
+                <Name>Shop Floor Paris</Name>
+                <City>Paris</City>
+                <Street>Rue du Jour 1</Street>
+                <PostalCode>75001</PostalCode>
+                <CountryCodeIso>FR</CountryCodeIso>
+            </ShopAddress>
+        </Shop>
+        <Shop id="4711">
+            <ShopAddress>
+                <Name>Shop Floor New York</Name>
+                <City>New York</City>
+                <Street>330 Park Ave</Street>
+                <PostalCode>10016</PostalCode>
+                <CountryCodeIso>US</CountryCodeIso>
+            </ShopAddress>
+        </Shop>
+    </Shops>
+</StoreSalesData>

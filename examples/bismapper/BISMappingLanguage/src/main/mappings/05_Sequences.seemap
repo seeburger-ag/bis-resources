@@ -1,0 +1,59 @@
+(:
+Sequences.seemap
+created at 2024-05-07 by d.pace SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    (: Sequence of numbers :)
+    let $myNumbers := (1, 2, 3)
+
+    (: count() returns the number of elements in a sequence :)
+    numberCount := count($myNumbers)
+    firstNumber := $myNumbers[1] (: NOTE: all indices are 1-based, not 0-based! :)
+
+    (: when a sequence is assigned to a simple target node, the node is repeated automatically :)
+    numberSequence := $myNumbers
+
+    (: Sequence of strings :)
+    let $myStrings := ("a", "b", "c")
+    stringSequence := $myStrings
+
+    (: Even single elements are sequences with 1 element :)
+    let $myString := "test"
+    literalElementCount := count($myString)
+    accessLiteralSequence := $myString[1]
+
+    (: There is no "null" concept in XPath / XQuery, instead empty sequences are used :)
+    let $emptySequence := ()
+    emptySequenceElementCount := count($emptySequence)
+    emptySequenceOutput := $emptySequence
+
+    (: IMPORTANT TAKEAWAY: every expression results in a sequence :)
+
+    (: some functions take sequences as parameters :)
+    sum := sum($myNumbers)
+    average := avg($myNumbers)
+    minimum := min($myNumbers)
+    maximum := max($myNumbers)
+
+    (:
+        Exercise:
+
+        Create a mixed sequence containing
+        * A string literal
+        * An integer literal
+        * A decimal literal
+        * A boolean literal
+
+        and write all elements of the sequence to the output.
+
+        Expected output:
+
+        <output>string</output>
+        <output>42</output>
+        <output>3.1415</output>
+        <output>true</output>
+    :)
+}

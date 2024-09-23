@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns="http://www.seeburger.com/Demo/SalesData" xmlns:bic="http://www.seeburger.com/bicng/lang/schema/" xmlns:xs="http://www.w3.org/2001/XMLSchema" bic:messageType="XML" elementFormDefault="qualified" targetNamespace="http://www.seeburger.com/Demo/SalesData">
+
+  <xs:element name="StoreSalesData">
+
+    <xs:annotation>
+
+      <xs:documentation bic:owner="SEEBURGER" xml:lang="en">Regularly reported sales figures per shop</xs:documentation>
+
+    </xs:annotation>
+
+    <xs:complexType>
+
+      <xs:sequence>
+
+        <xs:element name="Shops">
+
+          <xs:complexType>
+
+            <xs:sequence>
+
+              <xs:element maxOccurs="unbounded" name="Shop">
+
+                <xs:annotation>
+
+                  <xs:documentation bic:owner="weiten" xml:lang="en">Single Shop </xs:documentation>
+
+                </xs:annotation>
+
+                <xs:complexType>
+
+                  <xs:sequence>
+
+                    <xs:element name="ReportDate" type="xs:dateTime">
+
+                      <xs:annotation>
+
+                        <xs:documentation bic:owner="weiten" xml:lang="en">Date when sales figures where generated</xs:documentation>
+
+                      </xs:annotation>
+
+                    </xs:element>
+
+                    <xs:element name="ShopAddress">
+
+                      <xs:annotation>
+
+                        <xs:documentation bic:owner="weiten" xml:lang="en">Local address of shop</xs:documentation>
+
+                      </xs:annotation>
+
+                      <xs:complexType>
+
+                        <xs:sequence>
+
+                          <xs:element name="Name" type="xs:string">
+
+                            <xs:annotation>
+
+                              <xs:documentation bic:owner="weiten" xml:lang="en">Local shop name</xs:documentation>
+
+                            </xs:annotation>
+
+                          </xs:element>
+
+                          <xs:element name="City" type="xs:string"/>
+
+                          <xs:element name="Street" type="xs:string"/>
+
+                          <xs:element name="PostalCode" type="xs:unsignedInt"/>
+
+                          <xs:element name="CountryCodeIso" type="xs:string"/>
+
+                        </xs:sequence>
+
+                      </xs:complexType>
+
+                    </xs:element>
+
+                    <xs:element name="ItemSales">
+
+                      <xs:annotation>
+
+                        <xs:documentation bic:owner="weiten" xml:lang="en">Item-based figures for shop</xs:documentation>
+
+                      </xs:annotation>
+
+                      <xs:complexType>
+
+                        <xs:sequence>
+
+                          <xs:element maxOccurs="unbounded" name="Item">
+
+                            <xs:annotation>
+
+                              <xs:documentation bic:owner="weiten" xml:lang="en">Single item data</xs:documentation>
+
+                            </xs:annotation>
+
+                            <xs:complexType>
+
+                              <xs:sequence>
+
+                                <xs:element name="Quantity" type="xs:integer">
+
+                                  <xs:annotation>
+
+                                    <xs:documentation bic:owner="weiten" xml:lang="en">Quantity sold</xs:documentation>
+
+                                  </xs:annotation>
+
+                                </xs:element>
+
+                                <xs:element name="Desc">
+
+                                  <xs:annotation>
+
+                                    <xs:documentation bic:owner="weiten" xml:lang="en">Product description </xs:documentation>
+
+                                  </xs:annotation>
+
+                                  <xs:complexType>
+
+                                    <xs:simpleContent>
+
+                                      <xs:extension base="xs:string">
+
+                                        <xs:attribute name="lang" type="xs:string" use="required"/>
+
+                                      </xs:extension>
+
+                                    </xs:simpleContent>
+
+                                  </xs:complexType>
+
+                                </xs:element>
+
+                                <xs:element name="SalesUnitPrice">
+
+                                  <xs:complexType>
+
+                                    <xs:simpleContent>
+
+                                      <xs:extension base="xs:decimal">
+
+                                        <xs:attribute name="currency" type="xs:string" use="required"/>
+
+                                      </xs:extension>
+
+                                    </xs:simpleContent>
+
+                                  </xs:complexType>
+
+                                </xs:element>
+
+                                <xs:any maxOccurs="1" minOccurs="0" processContents="lax">
+
+                                  <xs:annotation>
+
+                                    <xs:documentation bic:owner="weiten" xml:lang="en">Custom extension</xs:documentation>
+
+                                  </xs:annotation>
+
+                                </xs:any>
+
+
+                              </xs:sequence>
+
+                              <xs:attribute name="id" type="xs:unsignedLong" use="required">
+
+                                <xs:annotation>
+
+                                  <xs:documentation bic:owner="weiten" xml:lang="en">Unique product id</xs:documentation>
+
+                                </xs:annotation>
+
+                              </xs:attribute>
+
+                            </xs:complexType>
+
+                          </xs:element>
+
+                        </xs:sequence>
+
+                      </xs:complexType>
+
+                    </xs:element>
+
+                  </xs:sequence>
+
+                  <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
+
+                </xs:complexType>
+
+              </xs:element>
+
+            </xs:sequence>
+
+          </xs:complexType>
+
+        </xs:element>
+
+      </xs:sequence>
+
+    </xs:complexType>
+
+  </xs:element>
+
+</xs:schema>

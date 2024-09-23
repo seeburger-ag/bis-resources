@@ -1,0 +1,59 @@
+(:
+Literals.seemap
+created at 2024-05-07 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    (: String literals can be enclosed in single or double quotes :)
+    myString := "Hi!"
+    myString := 'Hi!'
+
+    (: This is especially useful if the string content contains quotation marks :)
+    myString := "Let's go"
+    myString := 'Hamlet: "To be, or not to be, that is the question"'
+
+    (: Quotation marks inside strings must be escaped with backslashes :)
+    myString := 'Bertrand Russell: "Science is what you know. Philosophy is what you don\'t know."'
+
+    (: Integer literals :)
+    myInteger := 42
+    myInteger := - 23
+
+    (: Native support for big integers :)
+    myLargeInteger := 123987418753462384721379456189327645891264
+
+    (: Decimal literals :)
+    myDecimal := 3.1415
+    myDecimal := - 6.8
+
+    (: Native support for big decimals :)
+    myLargeDecimal := 867168719871984687169875637841358713.681738735
+
+    (: Boolean literals :)
+    myBoolean := true()
+    myBoolean := false()
+
+    (:
+        Exercise:
+
+        1. Create another complex child node named "myNode" under root
+        2. Create four value assignments under the new complex node:
+           * A value assignment with a string value
+           * A value assignment with an integer value
+           * A value assignment with a decimal value
+           * A value assignment with a boolean value
+
+        Expected output:
+
+        <root>
+            <myNode>
+                <myString>Hi!</myString>
+                <myInteger>42</myInteger>
+                <myDecimal>3.1415</myDecimal>
+                <myBoolean>true</myBoolean>
+            </myNode>
+        </root>
+    :)
+}

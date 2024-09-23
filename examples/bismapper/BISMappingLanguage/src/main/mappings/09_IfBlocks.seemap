@@ -1,0 +1,32 @@
+(:
+IfBlocks.seemap
+created at 2024-05-15 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    let $myNumber := 42
+
+    if ($myNumber = 42)
+    {
+        result := "The answer to the ultimate question of life, the universe and everything"
+        a := "foo"
+    }
+    else
+    {
+        result := "It's just a random number"
+
+        let $string := "bar"
+        b := $string
+    }
+
+    (:
+        Exercise:
+
+        Create a new if block that creates the following output:
+
+        * If $myNumber is greater than zero, a leaf node named "result" should be created with the value of $myNumber
+        * Otherwise, a leaf node named "error" should be created with the value "Invalid number"
+    :)
+}

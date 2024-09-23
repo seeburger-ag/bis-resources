@@ -1,0 +1,67 @@
+(:
+PathExpressions.seemap
+created at 2024-05-23 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+import schema default element namespace "http://www.seeburger.com/Demo/SalesData" at "SalesData.seexsd" as source;
+
+(: root loop: creates the target node root for "each" StoreSalesData root node in the input message :)
+root <- /StoreSalesData
+{
+    (: you can write absolute paths at any time :)
+    (: note that this has no impact on performance - the runtime will read the input only once :)
+    (: the result contains 3 cities, in which case the output will be repeated :)
+    absolutePathOutput := /StoreSalesData/Shops/Shop/ShopAddress/City
+
+    (: relative paths use the parent loop path as context :)
+    relativePathOutput := Shops/Shop/ShopAddress/City
+
+
+    Stores
+    {
+        Store <- Shops/Shop
+        {
+            (: XML attributes can be accessed with the @ prefix :)
+            ID := @id
+            Name := ShopAddress/Name
+            City := ShopAddress/City
+        }
+
+        (:
+        Exercise:
+
+        Add a value assignment for the target leaf node "PostalCode".
+        The corresponding input data is stored under ShopAddress/PostalCode.
+
+        Add another value assignment for target leaf node "ReportDate".
+        The corresponding input data is stored under Shop/ReportDate.
+
+        Expected output:
+
+        <Stores>
+            <Store>
+                <ID>8852662</ID>
+                <Name>Shop Floor Berlin</Name>
+                <City>Berlin</City>
+                <PostalCode>10115</PostalCode>
+                <ReportDate>2019-05-06T21:57:31.000+02:00</ReportDate>
+            </Store>
+            <Store>
+                <ID>000005</ID>
+                <Name>Shop Floor Paris</Name>
+                <City>Paris</City>
+                <PostalCode>75001</PostalCode>
+                <ReportDate>2019-05-06T22:03:11.000+02:00</ReportDate>
+            </Store>
+            <Store>
+                <ID>888888881</ID>
+                <Name>Shop Floor New York</Name>
+                <City>New York</City>
+                <PostalCode>10016</PostalCode>
+                <ReportDate>2019-05-06T23:57:31.000-04:00</ReportDate>
+            </Store>
+        <Stores>
+
+        :)
+    }
+}

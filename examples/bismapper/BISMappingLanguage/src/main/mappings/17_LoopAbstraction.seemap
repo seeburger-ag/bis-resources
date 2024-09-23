@@ -1,0 +1,30 @@
+(:
+LoopAbstraction.seemap
+created at 2024-06-26 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+import schema default element namespace "http://www.seeburger.com/Demo/SalesData" at "SalesData.seexsd" as source;
+
+(: root loop: creates target root node for each source root node (normally exactly one) :)
+root <- /StoreSalesData
+{
+    (: loop that runs exactly once :)
+    Stores
+    {
+        (: creates a Store for each Shop. The path expression itself can be interpreted as nested loops collecting source data. :)
+        Store <- Shops/Shop
+        {
+            let $myNumber := 23
+
+            (: two (abstract) loops that are executed exactly once, but only one will be executed at runtime :)
+            if ($myNumber = 42)
+            {
+                Output := "foo"
+            }
+            else
+            {
+                Result := "bar"
+            }
+        }
+    }
+}

@@ -1,0 +1,38 @@
+(:
+ArithmeticExpressions.seemap
+created at 2024-05-07 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    additionResult := 23 + 42
+    subtractionResult := 42 - 23
+    multiplicationReslt := 23 * 42
+    divisionResult := 42 div 23 (: Note: division operator is div, not / :)
+    integerDivisionResult := 42 idiv 23 (: cuts off all fraction digits :)
+    moduloResult := 8 mod 3 (: remainder after division :)
+
+    result1 := 2 * 3 + 4
+    (: use parentheses to prioritize computations against default operator precedence :)
+    result2 := 2 * (3 + 4)
+
+    (: rounding :)
+    floor := floor(1.9)
+    ceil := ceil(1.1)
+    round := round(1.5)
+    advancedRound := round(1.5, 0, "HALF_DOWN")
+
+    (:
+        Exercise:
+
+        An input message contains 207 items.
+        In the output, the items have to be written in groups of max. 5 items.
+        Compute how many groups are needed.
+        Write the result to a leaf node named "numberOfGroups".
+
+        Expected output:´
+
+        <numberOfGroups>42</numberOfGroups>
+    :)
+}
