@@ -1,0 +1,41 @@
+(:
+IfExpressions_ComparisonExpressions.seemap
+created at 2024-05-15 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    let $myNumber := 42
+    (: Comparison operators: < <= >= > = != :)
+    numberComparisonResult := if ($myNumber < 100)
+                    then "smaller than 100"
+                    else "greater than or equal to 100"
+
+    let $myString := "test"
+    stringComparisonResult := if ($myString = "test")
+                    then "string is equal to 'test'"
+                    else "strings are not equal"
+
+    (: XPath comparison semantics for sequences: if one of the combinations yields true, the whole comparison yields true :)
+    stringToSequenceComparisonResult := if ($myString = ("test", "foo"))
+                    then "found a match"
+                    else "no match found"
+
+    (: conditions can be combined using the boolean operators and / or :)
+    multipleConditionsResult := if ($myNumber = 42 and $myString = "test")
+                    then "both true"
+                    else "at least one false"
+
+    (:
+        Exercise:
+
+        Create a new value assignment with an if expression.
+
+        The output should be "at least one true", if
+        * $myNumber is not equal to 42
+        * OR $myString is equal to "test" or "foo"
+
+        Otherwise, the output should be "both false".
+    :)
+}

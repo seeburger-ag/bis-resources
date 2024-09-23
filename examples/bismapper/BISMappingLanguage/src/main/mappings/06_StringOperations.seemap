@@ -1,0 +1,40 @@
+(:
+StringOperations.seemap
+created at 2023-05-07 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    (: Native string concatenation :)
+    concatenatedString := "See" || "burger"
+
+    (: Functional string concatenation, equivalent to concatenation above :)
+    concatenatedString2 := concat("See", "burger")
+
+    trimmedString := trim(" input with spaces ")
+
+    left := left("Seeburger", 3)
+    right := right("Seeburger", 6)
+    (: remember: indices are 1-based :)
+    substring := substring("Seeburger", 4, 4)
+
+    replace := replace("Seeburger", "e", "3")
+
+    length := string-length("Seeburger")
+
+    (: produces a sequence containing three strings: ("a", "b", "c") :)
+    let $tokens := tokenize("a-b-c", "-")
+    tokenCount := count($tokens)
+    token := $tokens
+
+    (: concatenates all elements in the sequence, adding the specified delimiter between each element :)
+    joinedString := string-join($tokens, ".")
+
+    (:
+        Exercise:
+
+        A phone number is provided as the string "+49 7252 96 - 0".
+        Use string functions to convert it to the output "00497252960".
+    :)
+}

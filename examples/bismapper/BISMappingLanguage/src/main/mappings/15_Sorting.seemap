@@ -1,0 +1,37 @@
+(:
+Sorting.seemap
+created at 2024-05-27 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+import schema default element namespace "http://www.seeburger.com/Demo/SalesData" at "SalesData.seexsd" as source;
+
+root <- /StoreSalesData
+{
+    ShopsOrderedByCity
+    {
+        (: every loop can have an order by clause with one or more sorting criteria :)
+        Shop <- $shop in Shops/Shop order by $shop/ShopAddress/City
+        {
+            name := ShopAddress/Name
+            city := ShopAddress/City
+        }
+    }
+
+    ShopsOrderedByNumberOfItemsSold
+    {
+        Shop <- $shop in Shops/Shop order by sum($shop/ItemSales/Item/Quantity) descending
+        {
+            name := ShopAddress/Name
+            city := ShopAddress/City
+            totalItemSales := sum($shop/ItemSales/Item/Quantity)
+        }
+    }
+
+    (:
+        Exercise:
+
+        * In the first loop, add the PostalCode of the shop to the output.
+        * Modify the first loop to order the shops by PostalCode.
+        * Change the order from ascending to descending and verify the result.
+    :)
+}

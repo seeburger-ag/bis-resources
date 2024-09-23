@@ -1,0 +1,67 @@
+(:
+XPathAxes.seemap
+created at 2024-05-23 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+import schema default element namespace "http://www.seeburger.com/Demo/SalesData" at "SalesData.seexsd" as source;
+
+root <- /StoreSalesData
+{
+    Stores
+    {
+        Store <- Shops/Shop
+        {
+            (: the two path expressions are equivalent :)
+            ID := @id
+            ID2 := attribute::id
+
+            for ShopAddress
+            {
+                (: the two path expressions are equivalent :)
+                Name := Name
+                Name2 := child::Name
+
+                City := City
+
+                (: accessing parent nodes :)
+                ShopId := ../@id
+
+                (: ancestor axis: select parents, grandparents, etc. with the given name :)
+                AncestorShopId := ancestor::Shop/@id
+            }
+
+            (: descendant axis: select children, grandchildren, etc. with the given name :)
+            DescendantName := descendant::Name
+
+            FollowingSiblingCount := count(following-sibling::Shop)
+            PrecedingSiblingCount := count(preceding-sibling::Shop)
+
+            (:
+            Exercises:
+
+            Add a value assignment in the current (Shop) loop:
+            * The target leaf node should be named "FollowingShopCity"
+            * The value should contain the City of the following Shop (stored under Shop/ShopAddress/City)
+            * Hint: You can select only the first following Shop using following-sibling::Shop[1]
+
+            Expected Output:
+
+            <FollowingShopCity>Paris</FollowingShopCity> for the first shop
+            <FollowingShopCity>New York</FollowingShopCity> for the second shop
+            <FollowingShopCity/> for the last Shop
+
+            Add a value assignment in the ShopAddress loop:
+            * The target leaf node should be named "PrecedingShopName"
+            * PrecedingShopName should contain the Name of the preceding Shop (stored under Shop/ShopAddress/Name)
+            * Hint: you need to navigate to the parent, then to the preceding Shop, and then down again
+
+            Expected output:
+
+            <PrecedingShopName/> for the first shop
+            <PrecedingShopName>Shop Floor Berlin</PrecedingShopName> for the second shop
+            <PrecedingShopName>Shop Floor Paris</PrecedingShopName> for the last shop
+
+            :)
+        }
+    }
+}

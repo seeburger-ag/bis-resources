@@ -1,0 +1,65 @@
+(:
+Loops2.seemap
+created at 2024-06-20 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    loopOverNumbersWithComplexNodeCreation
+    {
+        (: equivalent to the loop below :)
+        for $myNumber in (1, 2, 3)
+        {
+            node
+            {
+                number := $myNumber
+            }
+        }
+    }
+
+    loopOverNumbersWithComplexNodeCreation2
+    {
+        (: equivalent to the loop above :)
+        node <- $myNumber in (1, 2, 3)
+        {
+            number := $myNumber
+        }
+    }
+
+    nestedLoops
+    {
+        for $myNumber in (1, 2, 3)
+        {
+            for $myString in ("a", "b", "c")
+            {
+                output := $myNumber || $myString
+            }
+        }
+    }
+
+    (:
+        Exercise:
+
+        Modify the last loop in such a way that we get the following output:
+
+        <node>
+            <currentNumber>1</currentNumber>
+            <output>1a</output>
+            <output>1b</output>
+            <output>1c</output>
+        </node>
+        <node>
+            <currentNumber>2</currentNumber>
+            <output>2a</output>
+            <output>2b</output>
+            <output>2c</output>
+        </node>
+        <node>
+            <currentNumber>3</currentNumber>
+            <output>3a</output>
+            <output>3b</output>
+            <output>3c</output>
+        </node>
+    :)
+}

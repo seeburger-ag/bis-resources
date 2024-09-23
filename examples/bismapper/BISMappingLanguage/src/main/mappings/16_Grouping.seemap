@@ -1,0 +1,33 @@
+(:
+Grouping.seemap
+created at 2024-05-27 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+import schema default element namespace "http://www.seeburger.com/Demo/SalesData" at "SalesData.seexsd" as source;
+
+root <- /StoreSalesData
+{
+    (: groups items by ID and loops over the resulting groups :)
+    (: $items is a sequence containing ALL item sales in the group (it has at least one item) :)
+    itemGroup <- $items in Shops/Shop/ItemSales/Item group by $id := $items/@id
+    {
+        itemId := $id
+        itemName := $items[1]/Desc
+        numberOfItemSaleRecords := count($items)
+        numberOfItemsSold := sum($items/Quantity)
+    }
+
+    (:
+        Exercise:
+
+        * Copy the complete loop above.
+        * Delete all statements inside the curly {} braces of the loop.
+        * Change the target node name from "itemGroup" to "currencyGroup".
+        * Change the grouping criteria so that the items are grouped by currency (Hint: the currency is stored under $items/SalesUnitPrice/@currency).
+        * Rename the variable $id to $currency.
+        * Add a value assignment in the loop that writes $currency to the output.
+          Expected output: You should now see two currencyGroups with the currencies EUR and USD.
+        * Copy the numberOfItemsSold assignment from the first loop and add it in the currencyGroup loop.
+          Expected output: 287 items were sold with EUR as currency, 1447 items with USD as currency.
+    :)
+}

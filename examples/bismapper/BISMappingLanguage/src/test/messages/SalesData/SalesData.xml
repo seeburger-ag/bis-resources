@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StoreSalesData>
+	<Shops>
+		<Shop id="8852662">
+			<ReportDate>2019-05-06T21:57:31.000+02:00</ReportDate>
+			<ShopAddress>
+				<Name>Shop Floor Berlin</Name>
+				<City>Berlin</City>
+				<Street>Mehr-Weg 1</Street>
+				<PostalCode>10115</PostalCode>
+				<CountryCodeIso>DE</CountryCodeIso>
+			</ShopAddress>
+			<ItemSales>
+				<Item id = "7123717727">
+					<Quantity UoM="pce">123</Quantity>
+					<Desc lang="en">Hipster Cola</Desc>
+					<SalesUnitPrice currency="EUR">3.99</SalesUnitPrice>
+				</Item>
+				<Item id = "5245233333">
+					<Quantity UoM="pce">52</Quantity>
+					<Desc lang="en">Beard Wax</Desc>
+					<SalesUnitPrice currency="EUR">7.50</SalesUnitPrice>
+				</Item>
+				<Item id = "8546665252">
+					<Quantity UoM="pce">8</Quantity>
+					<Desc lang="en">Lumberjack Shirt</Desc>
+					<SalesUnitPrice currency="EUR">59.99</SalesUnitPrice>
+				</Item>
+				<Item id = "5665525554">
+					<Quantity UoM="pce">8</Quantity>
+					<Desc lang="en">Hairband</Desc>
+					<SalesUnitPrice currency="EUR">1.15</SalesUnitPrice>
+				</Item>
+			</ItemSales>
+		</Shop>
+		<Shop id="000005">
+			<ReportDate>2019-05-06T22:03:11.000+02:00</ReportDate>
+			<ShopAddress>
+				<Name>Shop Floor Paris</Name>
+				<City>Paris</City>
+				<Street>Rue du Jour 1</Street>
+				<PostalCode>75001</PostalCode>
+				<CountryCodeIso>FR</CountryCodeIso>
+			</ShopAddress>
+			<ItemSales>
+				<Item id = "8546665252">
+					<Quantity UoM="pce">23</Quantity>
+					<Desc lang="en">Lumberjack Shirt</Desc>
+					<SalesUnitPrice currency="EUR">59.99</SalesUnitPrice>
+				</Item>
+				<Item id = "5665525554">
+					<Quantity UoM="pce">3</Quantity>
+					<Desc lang="en">Hairband</Desc>
+					<SalesUnitPrice currency="EUR">1.15</SalesUnitPrice>
+				</Item>
+				<Item id = "5245233333">
+					<Quantity UoM="pce">52</Quantity>
+					<Desc lang="en">Beard Wax</Desc>
+					<SalesUnitPrice currency="EUR">7.50</SalesUnitPrice>
+				</Item>
+				<Item id = "6662312355">
+					<Quantity UoM="pce">18</Quantity>
+					<Desc lang="en">Instant Camera</Desc>
+					<SalesUnitPrice currency="EUR">120.00</SalesUnitPrice>
+				</Item>
+			</ItemSales>
+		</Shop>
+		<Shop id="888888881">
+			<ReportDate>2019-05-06T23:57:31.000-04:00</ReportDate>
+			<ShopAddress>
+				<Name>Shop Floor New York</Name>
+				<City>New York</City>
+				<Street>330 Park Ave</Street>
+				<PostalCode>10016</PostalCode>
+				<CountryCodeIso>US</CountryCodeIso>
+			</ShopAddress>
+			<ItemSales>
+				<Item id = "8546665252">
+					<Quantity UoM="pce">142</Quantity>
+					<Desc lang="en">Lumberjack Shirt</Desc>
+					<SalesUnitPrice currency="USD">65.00</SalesUnitPrice>
+				</Item>
+				<Item id = "6662312355">
+					<Quantity UoM="pce">53</Quantity>
+					<Desc lang="en">Instant Camera</Desc>
+					<SalesUnitPrice currency="USD">140.00</SalesUnitPrice>
+				</Item>
+				<Item id = "8878777888">
+					<Quantity UoM="pce">1252</Quantity>
+					<Desc lang="en">Energy Drink</Desc>
+					<SalesUnitPrice currency="USD">1.99</SalesUnitPrice>
+				</Item>
+			</ItemSales>
+		</Shop>
+	</Shops>
+</StoreSalesData>

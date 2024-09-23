@@ -1,0 +1,24 @@
+(:
+ForExpressions.seemap
+created at 2024-05-08 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    let $strings := (" a ", " b ", " c ")
+    numberOfInputStrings := count($strings)
+
+    (: trims each string, producing a new sequence with the same element count :)
+    let $trimmedStrings := for $string in $strings return trim($string)
+    numberOfOutputStrings := count($trimmedStrings)
+
+    output := $trimmedStrings
+
+    (:
+        Exercise:
+
+        Transform the input sequence (1, 2, 3) to the sequence (2, 3, 4)
+        by adding 1 to each of the input numbers. Write out the resulting sequence.
+    :)
+}

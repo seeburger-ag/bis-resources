@@ -1,0 +1,48 @@
+(:
+Variables.seemap
+created at 2024-05-07 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    (: Variables are declared using let clauses :)
+    let $x := 42
+    (: we can use $x from now on, but $x is visible inside root{} only :)
+    element
+    {
+        myNumber := $x
+
+        let $y := "test"
+        (: scope of $y starts here :)
+        myString := $y
+        (: scope of $y ends here :)
+    }
+
+    rootLevelNumber := $x
+    (: $y is not visible here :)
+}
+
+(: neither $x nor $y are visible here :)
+
+(:
+    Exercise:
+
+    1. Declare a new variable named $a before the "root" node with the value "my value".
+    2. Add a value assignment before "element" and write out the value of $a.
+    3. Add a value assignment after "myString" and write out the value of $a.
+    4. Add a value assignment after "rootLevelNumber" and write out the value of $a.
+
+    Expected Output:
+
+    <root>
+        <output>my value</output>
+        <element>
+            <myNumber>42</myNumber>
+            <myString>test</myString>
+            <output>my value</output>
+        </element>
+        <rootLevelNumber>42</rootLevelNumber>
+        <output>my value</output>
+    </root>
+:)

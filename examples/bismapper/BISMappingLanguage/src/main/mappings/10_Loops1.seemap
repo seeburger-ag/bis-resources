@@ -1,0 +1,44 @@
+(:
+Loops1.seemap
+created at 2024-05-15 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+
+root
+{
+    loopOverNumbers
+    {
+        for $myNumber in (1, 2, 3)
+        {
+            number := $myNumber
+        }
+    }
+
+    loopOverStrings
+    {
+        for $myString in ("a", "b", "c")
+        {
+            string := $myString
+        }
+    }
+
+    loopOverStringsWithIndex
+    {
+        for $myString at $i in ("a", "b", "c")
+        {
+            index := $i
+            string := $myString
+        }
+    }
+
+    (:
+        Exercise:
+
+        Modify the last loop in such a way that we get the following output:
+        <output>a1</output>
+        <output>b2</output>
+        <output>c3</output>
+
+        Hint: use the native string concatenation operator || to concatenate the values.
+    :)
+}

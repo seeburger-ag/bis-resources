@@ -1,0 +1,30 @@
+(:
+Predicates.seemap
+created at 2024-05-27 by d.pace, SEEBURGER AG.
+Copyright 2024, SEEBURGER AG. All rights reserved.
+:)
+import schema default element namespace "http://www.seeburger.com/Demo/SalesData" at "SalesData.seexsd" as source;
+
+root <- /StoreSalesData
+{
+    (: Filters (so called "predicates") can be added at any step in the path :)
+    (: This predicate will filter the first Shop, and disregard the other Shops :)
+    firstShopId := Shops/Shop[1]/@id
+
+    (: Filters the last shop. last() is a contextual function that returns the index of the last child (= number of children) under the current context node :)
+    lastShopId := Shops/Shop[last()]/@id
+
+    (: Filters all ShopAddresses with a specific City, then selects the Street :)
+    parisShopStreet := Shops/Shop/ShopAddress[City = "Paris"]/Street
+
+    (: Filters all Shops by CountryCodeIso and City, then selects the report date :)
+    newYorkShopReportDate := Shops/Shop[ShopAddress/CountryCodeIso = "US" and ShopAddress/City = "New York"]/ReportDate
+
+    (:
+        Exercise:
+
+        Output the following data using path expressions with predicates:
+        * The street of the last shop (expected output: <lastShopStreet>330 Park Ave</lastShopStreet>)
+        * The city of the shop that has less than 4 Item records located at Shop/ItemSales/Item (expected output: <city>New York</city>)
+    :)
+}
