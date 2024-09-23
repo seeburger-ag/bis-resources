@@ -52,7 +52,7 @@ class MSSQLServerTests
         System.out.println("Starting container...");
 
         // we do this here to not hide the fail reason in Initializer Exception
-        dbContainer = new MSSQLServerContainer<>(/* DockerImageName.parse("mcr.microsoft.com/mssql/server:2017-CU12") */)
+        dbContainer = new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2022-latest"))
                 .acceptLicense();
 
         dbContainer.start();
@@ -164,7 +164,7 @@ class MSSQLServerTests
         System.out.println("Executing " + file + " as " + login);
 
         ExecResult r = dbContainer.execInContainer("bash", "-ce",
-                "/opt/mssql-tools/bin/sqlcmd -Slocalhost,1433 " + login + " -X1 -i/tmp/" + file);
+                "/opt/mssql-tools18/bin/sqlcmd -Slocalhost,1433 -C " + login + " -X1 -i/tmp/" + file);
 
         String err = Objects.requireNonNullElse(r.getStderr(), "");
         String result = "err: " + err + " out: " + r.getStdout();
