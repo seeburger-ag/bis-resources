@@ -89,7 +89,7 @@
                 <!-- since Gitub default Maven is 3.8 we need a compiler who knows release -->
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.13.0</version>
+                    <version>3.14.0</version>
                 </plugin>
                 <!-- since Gitub default Maven is 3.8 we need a surefire who detects test -->
                 <plugin>
