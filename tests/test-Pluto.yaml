@@ -1,0 +1,6 @@
+apiVersion: node.k8s.io/v1beta1
+kind: RuntimeClass
+metadata:
+  name: my-runtimeclass
+spec:
+  runtimeHandler: runc  # specify the runtime handler (like "runc" or "gvisor")
