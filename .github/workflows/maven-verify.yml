@@ -38,3 +38,10 @@ jobs:
       if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.DISABLE_MAVEN_DEPENDENCY_SUBMISSION != 'true' }}
       with:
         directory: tests/
+    
+    - name: Prepare Pluto
+      uses: FairwindsOps/pluto/github-action@master
+
+    - name: scan for deprecated K8s API w/ Pluto
+      run: |
+        pluto detect-files -d .
