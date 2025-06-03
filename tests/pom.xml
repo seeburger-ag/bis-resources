@@ -11,7 +11,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.release>17</maven.compiler.release>
         <version.slf4j>2.0.17</version.slf4j>
-        <version.testcontainers>1.21.0</version.testcontainers>
+        <version.testcontainers>1.21.1</version.testcontainers>
     </properties>
 
     <dependencies>
