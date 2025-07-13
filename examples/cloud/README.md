@@ -8,7 +8,7 @@ Sample resources for *SEEBURGER BIS* on public clouds.
 ## Create Demo Environment (SQL Database) `az-create-env-sqldb.sh`
 
 The script *`az-create-env-sqldb.sh`* is used to set up a BIS Landscape on _Azure_, using _SQL Database_ as the system database.
-It will create the _Resource Group(s)_, _Virtual Network_, , _Subnets_, _Network Security Groups_, _(logical) Database Server_, _SQL Database_ and a single _VM_ for further installation of the _SEEBURGER Installation Server_.
+It will create the _Resource Group(s)_, _Virtual Network_, _Subnets_, _Network Security Groups_, _(logical) Database Server_, _SQL Database_ and a single _VM_ for further installation of the _SEEBURGER Installation Server_.
 
 ### Script Configuration
 
@@ -66,7 +66,7 @@ The VM is set up with the initial Linux user "*`seeadmin`*".
 
 The public IP of the VM is printed as the last line of the script output.
 
-*Connecting the VM with SSH*
+**Connecting the VM with SSH**
 
 ```console
 > ssh -i ~/.ssh/id_seebisdemo seeadmin@1.2.3.4
@@ -75,7 +75,7 @@ The public IP of the VM is printed as the last line of the script output.
 This only works from the initial IP-address you executed the script.
 
 
-*Conneting to the SQL Database*
+**Conneting to the SQL Database**
 
 The database is set up with the initial SQL authentication "*`seedba`*"/"*`<Secret_Password>`*" and the Entra user as alternative admin.
 Make sure to change the password in the script before using it.
@@ -84,7 +84,7 @@ To get started on the VM, install the `sqlcmd` utility as described here by Micr
 https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?tabs=redhat-install#RHEL
 
 
-*Installimng the BIS Installation Server *
+**Installing the BIS Installation Server**
 
 If you want to use the Internet accessible portal option for the Installation Server, be sure to create a TLS certificate and enable the listener (port 8443).
 Alternatively you can use ssh port forwarding (port 22 is open) for the 8181 http port.
