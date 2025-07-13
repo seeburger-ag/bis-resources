@@ -106,7 +106,7 @@ To see the progress of the script, start it with `bash -x az-create-env-sqldb.sh
 From the VM command line you can use the `dig +short seebisdb-test-1.database.windows.net` command to list the name resolution results or the database private endpoint.
 It should eventuelly list a private IP from the DB subnet.
 
-Use the `nc -v seebisdb-test-1.database.windows.net 1433` command to check basic connectivity and the `sqlcmd -U seedba -S seebisdb-test-1.database.windows.net -Q "select dbname();"` to validate the login.
+Use the `nc -v seebisdb-test-1.database.windows.net 1433` command to check basic connectivity and the `/opt/mssql-tools18/bin/sqlcmd -U seedba -S seebisdb-test-1.database.windows.net -X 1 -Q "select db_name()"` to validate the logins (will print "`master`" for `seedba` user and "`SEEASDB0`" for the owner and runtime users - after you have created them).
 
 If you do not use ssh port forwarding to reach the installation server (`-L 8181:127.0.0.1:8181` parameter) you need to enable portal access to the running Installation Server.
 For this, remember to open incoming port 8443 in the _firewalld_ configuration of the EL9 host.
