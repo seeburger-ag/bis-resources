@@ -15,15 +15,14 @@ fi
 
 # read out current login properties to be used as admin
 subscription="$(az account show --query id -o tsv)" # get current or specify
-managed_by=("--managed-by" "$(az ad signed-in-user show --query id -o tsv)")
 admin_sid="$(az ad signed-in-user show --query id -o tsv)"
 admin_name="$(az ad signed-in-user show --query userPrincipalName -o tsv)"
 myip="$(curl -s ifconfig.me)"
 
 # configurable parameters
 location='westeurope' # location of all resources
-tier="-test" # allows to have multiple tiers in subscription. Can be empty
-job="-1" # makes it globally unique (besides private dns zone). Can be empty.
+tier='-test' # allows to have multiple tiers in subscription. Can be empty
+job='-1' # makes it globally unique (besides private dns zone). Can be empty.
 rg_name="rg-seebis$tier$job" # rg-seebis-prod-1 
 admin_prefix=("$myip/32") # network prefix public source of access (SSH, Portal)
 admin_pass='<Secret_Password>' # Important to change, keep comples
@@ -36,7 +35,7 @@ db_subnet_name='subnet-db'
 db_subnet_prefix='10.129.0.0/26'
 db_name='seeasdb0'
 tags=("--tags" "owner=email@example.com" "stage=$tier" "com.seeburger.product=bis" )
-
+managed_by=("--managed-by" "$admin_sid")
 
 # Allows to use shared RG/Subscription for private DNS zone
 infra_rg_name="$rg_name" # "infra" or "${rg_name}-infra" 
