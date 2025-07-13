@@ -1,7 +1,7 @@
 #!/bin/bash
 # TEMPLATE - Set up demo BIS Landscape with Az SQL Database
 # Copyright 2025 SEEBURGER AG, Germany.
-set +x -Eeu -o pipefail -o noclobber
+set -Eeu -o pipefail -o noclobber
 
 # one time setup of SSH key for VM (replace with own)
 ssh_id="$HOME/.ssh/id_seebisdemo"
@@ -127,7 +127,7 @@ $az network nsg create -o table \
   --name "${db_nsg}"
 
 $az network nsg rule create -o table \
-  --nsg-name "${db_nsg}" --resource-group "$bis_rg_name" \
+  --nsg-name "${db_nsg}" --resource-group "$db_rg_name" \
   --name AllowMSSQLIn \
   --priority 100 \
   --direction Inbound \
