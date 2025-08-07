@@ -64,10 +64,10 @@ You might need to destroy the whole resource group to re-create it.
 
 If you want to deploy multiple environments in your subscription, you can specify them with the `job`  (which overwrites `job=1` for DB and `job=2` for MI script) and/or `tier` (overwrites `test`) environment variables
 
-[source,console]
-----
+
+````console
 > job=4 tier="qa" ./az-create-env-sql*.sh
-----
+````
 
 Replace `*` with `db` or `mi` to run the aproperiate script.
 
@@ -79,14 +79,20 @@ Execution takes at least half an hour.
 
 The script has the same configurtation and execution logic as the `az-create-env-sqldb.sh`, but instead of a private endpoint, it directly generates the Managed Instance of SQL Server in the subnet-mi.
 
-* `$sqlmi_server_name` - The Managd Instance server name, used in URL (default `mi-seebis-test-2`)
+* `$sqlmi_server_name` - The SQL Managed Instance server name, used in URL (default `mi-seebis-test-2`).
+The final fully qualified name of the server contains a random component, you need to look it up from the console.
 
 
 ## Post creation steps
 
 The VM is set up with the initial Linux user "*`seeadmin`*".
 
-The public IP of the VM is printed as the last line of the script output.
+The public IP of the VM is printed as the last line of the script output, or can be queried with this command:
+
+```console
+> az vm list-ip-addresses -g rg-seebis-test-2
+```
+
 
 **Connecting the VM with SSH**
 
@@ -99,11 +105,13 @@ This only works from the initial IP-address you executed the script.
 
 **Connecting to the SQL Database**
 
-The database is set up with the initial SQL authentication "*`seedba`*"/"*`<Secret_Password>`*" and the Entra user as alternative admin.
+The database is set up with the initial SQL authentication "`seedba`"/"`<Secret_Password>`" and the _Entra ID_ user as alternative admin.
 Make sure to change the password in the script before using it.
 
 To get started on the VM, install the `sqlcmd` utility as described here by Microsoft:
-https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?tabs=redhat-install#RHEL
+https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools
+
+* go-sqlcmd release page: https://github.com/microsoft/go-sqlcmd/releases/
 
 
 **Installing the BIS Installation Server**
