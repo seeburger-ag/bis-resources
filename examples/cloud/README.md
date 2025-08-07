@@ -38,15 +38,17 @@ Should be limited to your internet address or not used at all in production.
 * `$admin_pass` - The initial dba password (SQL Authentication).
 Important to fill with new random one. (Unsecure default `'<Secret_Password>'`)
 
-Further relevant settings are `vnet_name`, `vnet_prefix`, `bis_subnet_name`, `bis_subnet_prefix`, `db_subnet_name`, and `db_subnet_prefix` and `tags`.
+Further relevant settings are `vm_user`, `admin_sqluser` for the OS and SQL admin users.
+`vnet_name`, `vnet_prefix`, `bis_subnet_name`, `bis_subnet_prefix`, `db_subnet_name`, and `db_subnet_prefix` for the network names and IP ranges.
+And finally `tags` for organisational grouping.
 
-If the addresses of _Oracle_ or _Microsoft_ download servers change, you might need to adjust the allowed prefixes in the NSG rules.
+If the addresses of _Oracle Yum Repo_ or _Microsoft Packages_ download servers change, you might need to adjust the allowed prefixes in the NSG rules.
 In production you should use a local mirror and you will need to allow services like the load balancers.
 
 
-### Script execution
+## Script execution
 
-Before you can start the script, make sure you have `bash`, `curl`, `ssh-keygen` and _Azure CLI_ installed and you are logged into an Azure account (with "`az login`") with appropriate permissions on a non-productive Azure subscription.
+Before you can start one of the scripts, make sure you have `bash`, `curl`, `ssh-keygen` and _Azure CLI_ installed and you are logged into an Azure account (with "`az login`") with appropriate permissions on a non-productive Azure subscription.
 
 Beware the costs of running resources.
 The script can be executed inside _Azure CloudShell_ (Bash).
@@ -54,10 +56,31 @@ The script does not take parameters, all configuration must be done inside the v
 
 After running the script, it will have created a local SSH key `~/.ssh/id_seebisdemo` to log into the VM via SSH to the listed public address.
 This step is skipped if you provided a different public key in `~/.ssh/id_seebisdemo.pub` for it, already.
+Please ensure to persist the generated key if your Cloud Shell is volatile.
 
 The script can be run multiple times, minor changes may be applied.
 However not all changes or structural changes are synced by this naive approach.
 You might need to destroy the whole resourc group to re-create it.
+
+If you want to deploy multiple environments in your subscription, you can specify them with the `job`  (which overwrites `job=1` for DB and `job=2` for MI script) and/or `tier` (overwrites `test`) environment variables
+
+[source,console]
+----
+> job=4 tier="qa" ./az-create-env-sql*.sh
+----
+
+Replace `*` with `db` or `mi` to run the aproperiate script.
+
+
+## Create Demo Environment (SQL MI) `az-create-env-sqlmi.sh`
+
+The script *`az-create-env-sqlmi.sh`* is used to set up a BIS Landscape on _Azure_, using _Azure SQL Managed Instance_ as the system database.
+Execution takes at least half an hour.
+
+The script has the same configurtation and execution logic as the `az-create-env-sqldb.sh`, but instead of a private endpoint, it directly generates the Managed Instance of SQL Server in the subnet-mi.
+
+* `$sqlmi_name` - The Managd Instance server name, used in URL (default `mi-seebis-test-2`)
+
 
 
 ## Post creation steps
@@ -94,19 +117,21 @@ If you need more admin machines, modify `admin_prefix`.
 We recommand to use ssh port forwarding for initial configuration of the Installation Server (http port 8181).
 
 
-### Cleanup
+## Cleanup
 
-After you finished your experiments, you can clean up (deletes everything!) with "`az group delete -n rg-seebis-test-1`".
+After you finished your experiments, you can clean up (deletes everything!) with "`az group delete -n rg-seebis-x-x`".
 
 
-### Troubleshooting
+## Troubleshooting
 
-To see the progress of the script, start it with `bash -x az-create-env-sqldb.sh`, and to check if the `az` CLI can login, use `az group list -o table` to see the existing resource groups in your default subscription.
+To validate connectivity with the Azure API and to list all existing resource groups, use `az group list -o table` for your default subscription.
 
-From the VM command line you can use the `dig +short seebisdb-test-1.database.windows.net` command to list the name resolution results or the database private endpoint.
+To debug the commands of the creation script, start it with `job=5 bash -x az-create-env-sql*.sh`.
+
+From the VM command line you can use the `dig +short seebisdb-x-x.database.windows.net` command to list the name resolution results or the database private endpoint.
 It should eventuelly list a private IP from the DB subnet.
 
-Use the `nc -v seebisdb-test-1.database.windows.net 1433` command to check basic connectivity and the `/opt/mssql-tools18/bin/sqlcmd -U seedba -S seebisdb-test-1.database.windows.net -X 1 -Q "select db_name()"` to validate the logins (will print "`master`" for `seedba` user and "`SEEASDB0`" for the owner and runtime users - after you have created them).
+Use the `nc -v seebisdb-test-1.database.windows.net 1433` command to check basic connectivity, and the `/opt/mssql-tools18/bin/sqlcmd -U seedba -S seebisdb-test-1.database.windows.net -X 1 -Q "select db_name()"` to validate the logins (will print "`master`" for `seedba` user and "`SEEASDB0`" for the owner and runtime users - after you have created them).
 
 If you do not use ssh port forwarding to reach the installation server (`-L 8181:127.0.0.1:8181` parameter) you need to enable portal access to the running Installation Server.
 For this, remember to open incoming port 8443 in the _firewalld_ configuration of the EL9 host.
