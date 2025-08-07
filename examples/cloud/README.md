@@ -2,7 +2,8 @@ Sample resources for *SEEBURGER BIS* on public clouds.
 
 ## Files
 
-* `az-create-env-sqldb.sh` - Bash script to generate a sample environment on Azure (using Azure SQL Database as system database).
+* `az-create-env-sqldb.sh` - Bash script to generate a sample environment on Azure (using **Azure SQL Database** as system database).
+* `az-create-env-sqlmi.sh` - Bash script to generate a sample environment on Azure (using **Azure SQL Managed Instance** as system database).
 
 
 ## Create Demo Environment (SQL Database) `az-create-env-sqldb.sh`
@@ -23,8 +24,8 @@ The database is reachable via a private endpoint, which is deployed in a dedicat
 
 By default the following is created:
 
-* `$tier` - Allows to have one resource group by tier (default `'-test'`)
-* `$job` - optional suffic to make rg name unique (default `'-1'`)
+* `$tier` - Allows to have one resource group by tier (default `'test'`)
+* `$job` - optional suffix to make rg name unique (default `'1'` or `'2'`)
 * `$location` - the region you want to create all of the resources (default: ``westeurope``)
 * `$tags` - allow to tag some resources with meta-data. (For some resources the `az` CLI does not work reliable, it is marked with "flaky" comment).
 Some resources do not allow to be tagged.
@@ -40,7 +41,6 @@ Important to fill with new random one. (Unsecure default `'<Secret_Password>'`)
 
 Further relevant settings are `vm_user`, `admin_sqluser` for the OS and SQL admin users.
 `vnet_name`, `vnet_prefix`, `bis_subnet_name`, `bis_subnet_prefix`, `db_subnet_name`, and `db_subnet_prefix` for the network names and IP ranges.
-And finally `tags` for organisational grouping.
 
 If the addresses of _Oracle Yum Repo_ or _Microsoft Packages_ download servers change, you might need to adjust the allowed prefixes in the NSG rules.
 In production you should use a local mirror and you will need to allow services like the load balancers.
@@ -60,7 +60,7 @@ Please ensure to persist the generated key if your Cloud Shell is volatile.
 
 The script can be run multiple times, minor changes may be applied.
 However not all changes or structural changes are synced by this naive approach.
-You might need to destroy the whole resourc group to re-create it.
+You might need to destroy the whole resource group to re-create it.
 
 If you want to deploy multiple environments in your subscription, you can specify them with the `job`  (which overwrites `job=1` for DB and `job=2` for MI script) and/or `tier` (overwrites `test`) environment variables
 
@@ -79,8 +79,7 @@ Execution takes at least half an hour.
 
 The script has the same configurtation and execution logic as the `az-create-env-sqldb.sh`, but instead of a private endpoint, it directly generates the Managed Instance of SQL Server in the subnet-mi.
 
-* `$sqlmi_name` - The Managd Instance server name, used in URL (default `mi-seebis-test-2`)
-
+* `$sqlmi_server_name` - The Managd Instance server name, used in URL (default `mi-seebis-test-2`)
 
 
 ## Post creation steps
@@ -98,7 +97,7 @@ The public IP of the VM is printed as the last line of the script output.
 This only works from the initial IP-address you executed the script.
 
 
-**Conneting to the SQL Database**
+**Connecting to the SQL Database**
 
 The database is set up with the initial SQL authentication "*`seedba`*"/"*`<Secret_Password>`*" and the Entra user as alternative admin.
 Make sure to change the password in the script before using it.
