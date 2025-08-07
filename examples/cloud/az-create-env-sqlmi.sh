@@ -1,5 +1,5 @@
 #!/bin/bash
-# TEMPLATE - Set up demo BIS Landscape with Az SQL Database
+# TEMPLATE - Set up demo BIS Landscape with Az SQL MI
 # Copyright 2025 SEEBURGER AG, Germany.
 set -Eeu -o pipefail -o noclobber
 
@@ -15,59 +15,58 @@ fi
 
 # read out current login properties to be used as admin
 subscription="$(az account show --query id -o tsv)" # get current or specify
+managed_by=("--managed-by" "$(az ad signed-in-user show --query id -o tsv)")
 admin_sid="$(az ad signed-in-user show --query id -o tsv)"
 admin_name="$(az ad signed-in-user show --query userPrincipalName -o tsv)"
 myip="$(curl -s ifconfig.me)"
 
 # configurable parameters
 location='westeurope' # location of all resources
-tier='test' # allows to have multiple tiers in subscription.
-job='1' # makes it globally unique (besides private dns zone).
+tier="${tier:-test}" # allows to have multiple tiers in subscription
+job="${job:-2}" # allows to have multiple jobs in tier
 
 admin_prefix=("$myip/32") # network prefix public source of access (SSH, Portal)
-admin_pass='<Secret_Password>' # Important to change, keep comples
 admin_sqluser='seedba' # initial DBA account
+admin_pass='<Secret_Password>' # Important to change, keep comples
 vnet_name_only='seebis'
 vnet_prefix='10.129.0.0/16'
 bis_subnet_name='subnet-apps'
 bis_subnet_prefix='10.129.128.0/24'
-db_subnet_name='subnet-db'
+db_subnet_name='subnet-mi'
 db_subnet_prefix='10.129.0.0/26'
 db_name='seeasdb0'
 vm_user='seeadmin'
 tags=("--tags" "owner=email@example.com" "stage=$tier" "com.seeburger.product=bis" )
-managed_by=("--managed-by" "$admin_sid")
 
 # If not empty, prefix with '-'
-tier="${tier:+-$tier}"
-job="${job:+-$job}"
+tier="${tier:+-$tier}" 
+job="${job:+-$job}"   # If not empty, prefix with '-'
 
 # default RG name pattern
-rg_name="rg-${vnet_name_only}$tier$job" # rg-seebis-prod-1
+rg_name="rg-${vnet_name_only}$tier$job" # rg-seebis-prod-2
 
-# Allows to use shared RG/Subscription for private DNS zone
+# Allows to use shared RG/subscription for private DNS zone
 infra_rg_name="$rg_name" # "infra" or "${rg_name}-infra" 
 infra_subscription="$subscription"
 
 # Allows to use different RG for DB or app resources
 bis_rg_name="$rg_name" # example: "rg-${vnet_name_only}-apps$tier$job"
-db_rg_name="$rg_name"  # example: "rg-${vnet_name_only}-db$tier$job"
-
-# derived with type prefix
-vnet_name="vnet-${vnet_name_only}"
-db_nsg="nsg-${vnet_name_only}-db" # align with db_subnet_name
-apps_nsg="nsg-${vnet_name_only}-apps" # align with bis_subnet_name
-sqldb_pe_name="pe-${vnet_name_only}-db"
-sqldb_server_name="db-${vnet_name_only}$tier$job" # db-seebis-test-1
+db_rg_name="$rg_name"  # example: "rg-${vnet_name_only}-mi$tier$job"
 
 # Does not need to have tier and job but helps with ad hoc admins
 vm_install_name="bis-install$tier$job"
 
+# derived with type prefix
+vnet_name="vnet-${vnet_name_only}"
+db_nsg="nsg-${vnet_name_only}-mi" # align with db_subnet_name
+db_rt="rt-${vnet_name_only}-mi" # align with db_subnet_name
+apps_nsg="nsg-${vnet_name_only}-apps" # align with bis_subnet_name
+sqlmi_server_name="mi-${vnet_name_only}$tier$job" # mi-seebis-test-2
 
 #az="echo az" for dry-run
 az=$(which az)
 
-echo "Creating $rg_name in $location / sub=$subscription / myip=$myip"
+echo "** Creating $rg_name in $location / sub=$subscription / myip=$myip"
 
 echo "== Resource Group $bis_rg_name"
 $az group create -o table \
@@ -81,7 +80,7 @@ if [ x"$rg_name" != x"$db_rg_name" ]; then
   $az group create -o table \
     -n "$db_rg_name" \
     --location "$location" \
-	  --subscription "$subscription" \
+	--subscription "$subscription" \
     "${managed_by[@]}" "${tags[@]}"
 fi
 
@@ -90,7 +89,7 @@ if [ x"$rg_name" != x"$infra_rg_name" ]; then
   $az group create -o table \
     -n "$infra_rg_name" \
     --location "$location" \
-	  --subscription "$infra_subscription" \
+	--subscription "$infra_subscription" \
     "${managed_by[@]}" "${tags[@]}"
 fi
 
@@ -101,18 +100,30 @@ $az network vnet create -o table \
   --address-prefix "$vnet_prefix"
   # flaky "${tags[@]}"
 
-echo "== BIS subnet"
-$az network vnet subnet create -o table \
-  -n "$bis_subnet_name" -g "$bis_rg_name" \
-  --vnet-name "$vnet_name" \
-  --address-prefix "$bis_subnet_prefix"
 
-echo "== DB Subnet"
-$az network vnet subnet create -o table \
-  -n "$db_subnet_name" -g "$db_rg_name" \
-  --vnet-name "$vnet_name" \
-  --default-outbound false \
-  --address-prefix "$db_subnet_prefix"
+# Prepare components of MI subnet
+
+if ! $az network nsg show -n "$db_nsg" -g "$db_rg_name" > /dev/null 2>&1; then
+  echo "=== NSG for DB Subnet"
+  # create this empty/early since delegation modifies it
+  $az network nsg create -o table \
+    -n "$db_nsg" -g "$db_rg_name"
+fi
+
+if ! az network route-table show -n "$db_rt" -g "$db_rg_name" > /dev/null 2>&1; then
+  echo "=== RT for DB Subnet"
+  # create this empty/early since delegation modifies it
+  $az network route-table create -o table \
+    -n "$db_rt" -g "$db_rg_name"
+    # flaky "${tags[@]}"
+fi
+
+$az network route-table route create -o table \
+  --name "to-${bis_subnet_name}" \
+  --resource-group "$db_rg_name" \
+  --route-table-name "$db_rt" \
+  --address-prefix "$bis_subnet_prefix" \
+  --next-hop-type VnetLocal
 
 
 db_zone='privatelink.database.windows.net'
@@ -124,7 +135,7 @@ if ! az network private-dns zone show --name "$db_zone" -g "$infra_rg_name" > /d
 fi
 
 if ! az network private-dns link vnet show -n "dnslink-$vnet_name_only" -z "$db_zone" -g "$infra_rg_name" > /dev/null 2>&1; then 
-  echo "=== DNS Zone Link"
+  echo "=== DNS Zone Link $db_zone"
   $az network private-dns link vnet create -o table \
     -n "dnslink-$vnet_name_only" -g "$infra_rg_name" \
     --zone-name "$db_zone" \
@@ -133,14 +144,22 @@ if ! az network private-dns link vnet show -n "dnslink-$vnet_name_only" -z "$db_
 fi
 
 
-echo "== NSG DB"
-$az network nsg create -o table \
-  -n "$db_nsg" -g "$db_rg_name"
+echo "== DB Subnet"
+# Unfortunatelly MI needs outbout access
+$az network vnet subnet create -o table \
+  -n "$db_subnet_name" -g "$db_rg_name" \
+  --vnet-name "$vnet_name" \
+  --default-outbound true \
+  --address-prefix "$db_subnet_prefix" \
+  --network-security-group "$db_nsg" \
+  --route-table "/subscriptions/$subscription/resourceGroups/$bis_rg_name/providers/Microsoft.Network/routeTables/${db_rt}" \
+  --delegation "Microsoft.Sql/managedInstances" 
 
+echo "== NSG db rules"
 $az network nsg rule create -o table \
   --nsg-name "$db_nsg" --resource-group "$db_rg_name" \
   --name AllowMSSQLIn \
-  --priority 100 \
+  --priority 200 \
   --direction Inbound \
   --access Allow \
   --protocol Tcp \
@@ -149,46 +168,51 @@ $az network nsg rule create -o table \
   --destination-address-prefixes '*' \
   --destination-port-ranges 1433 11000-11999
 
-$az network nsg rule create -o table \
-  --nsg-name "$db_nsg" --resource-group "$db_rg_name" \
-  --name DenyAllIn \
-  --priority 4000 \
-  --direction Inbound \
-  --access Deny \
-  --protocol '*' \
-  --source-address-prefixes '*' \
-  --source-port-ranges '*' \
-  --destination-address-prefixes '*' \
-  --destination-port-ranges '*'
+# might need to delete 65000 and 65001
 
-$az network nsg rule create -o table \
-  --nsg-name "$db_nsg" --resource-group "$db_rg_name" \
-  --name DenyAllOut \
-  --priority 4010 \
-  --direction Outbound \
-  --access Deny \
-  --protocol '*' \
-  --source-address-prefixes '*' \
-  --source-port-ranges '*' \
-  --destination-address-prefixes '*' \
-  --destination-port-ranges '*'
 
-echo "== NSG attach to $db_subnet_name"
-az network vnet subnet update -o table \
-  -n "$db_subnet_name" -g "$db_rg_name" \
-  --vnet-name "$vnet_name" \
-  --network-security-group "${db_nsg}"
+echo "== SQLMI Instance"
+# Resize (cpu capacity, edition, iops and storage) this apropriately
+# Configuration of redundancy not suited for prod
+$az sql mi create -o table \
+  -n "$sqlmi_server_name" -g "$db_rg_name" \
+  --subnet "$db_subnet_name" --vnet "$vnet_name" \
+	--location "$location" \
+	--admin-user "$admin_sqluser" -p "$admin_pass" \
+	--external-admin-principal-type "user" \
+	--external-admin-name "$admin_name" \
+	--external-admin-sid "$admin_sid" \
+  --public-data-endpoint-enabled false \
+  --timezone-id UTC \
+  --collation SQL_Latin1_General_CP1_CI_AS \
+  --database-format SQLServer2022 \
+  --zone-redundant false \
+  --backup-storage-redundancy Local \
+  --license-type LicenseIncluded \
+  -c 4 -e GeneralPurpose --gpv2 \
+  --storage 32GB \
+  "${tags[@]}"
 
+# small  -c 4 -e GeneralPurpose --gpv2 --iops 1000 --storage 96GB
+# medium -c 8 -e BusinessCritical --storage 320GB
+
+echo "== SQLMI Database"
+$az sql midb create -o table \
+  -n "$db_name" -g "$db_rg_name" \
+  --managed-instance "$sqlmi_server_name" \
+  "${tags[@]}"
+
+
+echo "== NSG apps"
 # The following rules contain DB access
 # Needs rules for intra-instance and ingress.
-echo "== NSG Apps"
 $az network nsg create -o table \
   -n "$apps_nsg" -g "$bis_rg_name"
-
+  
 $az network nsg rule create -o table \
   --nsg-name "$apps_nsg" --resource-group "$bis_rg_name" \
   --name AllowMSSQLOut \
-  --priority 100 \
+  --priority 200 \
   --direction Outbound \
   --access Allow \
   --protocol Tcp \
@@ -279,55 +303,20 @@ $az network nsg rule create -o table \
   --destination-address-prefixes '*' \
   --destination-port-ranges '*'
 
-echo "== NSG attach to subnet-apps"
+# might need to delete 65000 and 65001
+
+echo "== BIS subnet: $bis_subnet_name"
+$az network vnet subnet create -o table \
+  -n "$bis_subnet_name" -g "$bis_rg_name" \
+  --vnet-name "$vnet_name" \
+  --address-prefix "$bis_subnet_prefix"
+
+echo "== NSG attach to $bis_subnet_name"
 az network vnet subnet update -o table \
   --name "$bis_subnet_name" \
   --resource-group "$bis_rg_name" \
   --vnet-name "$vnet_name" \
-  --network-security-group "${apps_nsg}"
-
-
-echo "== SQLDB Server"
-$az sql server create -o table \
-    -n "$sqldb_server_name" -g "$db_rg_name" \
-	--location "$location" \
-	--admin-user "seedba" -p "$admin_pass" \
-	--external-admin-principal-type "user" \
-	--external-admin-name "$admin_name" \
-	--external-admin-sid "$admin_sid" \
-	--enable-public-network false \
-	--restrict-outbound-network-access true
-
-echo "== SQLDB Database $db_name"
-$az sql db create -o table \
-  -n "$db_name" -g "$db_rg_name" \
-  --server "$sqldb_server_name" \
-  -e Basic --service-objective Basic \
-  --bsr Local -z false \
-  --license-type LicenseIncluded \
-  --max-size 2GB \
-  --read-scale Disabled \
-  "${tags[@]}"
-
-# Small: -e GeneralPurpose -c 4 -f Gen5 \
-# Medium: -e BusinessCritical -c 8 -f Gen5
-
-echo "== SQLDB PE"
-$az network private-endpoint create -o table \
-  -n "$sqldb_pe_name" -g "$db_rg_name" \
-  --vnet-name "$vnet_name" --subnet "$db_subnet_name" \
-  --private-connection-resource-id "/subscriptions/$subscription/resourceGroups/$db_rg_name/providers/Microsoft.Sql/servers/$sqldb_server_name" \
-  --group-id "sqlServer" \
-  --connection-name "${sqldb_pe_name}-conn" \
-  --location "$location"
-  # flaky "${tags[@]}"
-
-echo "== DNS Zone Group"
-$az network private-endpoint dns-zone-group create -o table \
-  -n "${sqldb_pe_name}-group" -g "$db_rg_name" \
-  --endpoint-name "$sqldb_pe_name" \
-  --private-dns-zone "/subscriptions/$infra_subscription/resourceGroups/$infra_rg_name/providers/Microsoft.Network/privateDnsZones/${db_zone}" \
-  --zone-name "$db_zone"
+  --network-security-group "$apps_nsg"
 
 
 echo "== Installation Server VM"
