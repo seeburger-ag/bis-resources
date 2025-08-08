@@ -70,14 +70,16 @@ If you want to deploy multiple environments in your subscription, you can specif
 ````
 
 Replace `*` with `db` or `mi` to run the aproperiate script.
+this will provision the resources into a resource group called `rg-seebis-qa-4`.
+The VNet is by default called `vnet-seebis` in all cases.
 
 
 ## Create Demo Environment (SQL MI) `az-create-env-sqlmi.sh`
 
 The script *`az-create-env-sqlmi.sh`* is used to set up a BIS Landscape on _Azure_, using _Azure SQL Managed Instance_ as the system database.
-Execution takes at least half an hour.
+Execution takes at least half an hour (creation of MI step is slow).
 
-The script has the same configurtation and execution logic as the `az-create-env-sqldb.sh`, but instead of a private endpoint, it directly generates the Managed Instance of SQL Server in the subnet-mi.
+The script has the same configuration and execution logic as the `az-create-env-sqldb.sh`, but instead of a private endpoint, it directly generates the Managed Instance of SQL Server in the database subnet called `subnet-mi`.
 
 * `$sqlmi_server_name` - The SQL Managed Instance server name, used in URL (default `mi-seebis-test-2`).
 The final fully qualified name of the server contains a random component, you need to look it up from the console.
@@ -85,7 +87,10 @@ The final fully qualified name of the server contains a random component, you ne
 
 ## Post creation steps
 
-The VM is set up with the initial Linux user "*`seeadmin`*".
+The VM is set up with the initial Linux user "`seeadmin`".
+
+
+**Connecting the VM with SSH**
 
 The public IP of the VM is printed as the last line of the script output, or can be queried with this command:
 
@@ -93,20 +98,19 @@ The public IP of the VM is printed as the last line of the script output, or can
 > az vm list-ip-addresses -g rg-seebis-test-2
 ```
 
-
-**Connecting the VM with SSH**
+use this IP to connect with a SSH client specifying the matching private key:
 
 ```console
 > ssh -i ~/.ssh/id_seebisdemo seeadmin@1.2.3.4
 ```
 
-This only works from the initial IP-address you executed the script.
+This only works from a machine with allow-listed IP-address.
 
 
 **Connecting to the SQL Database**
 
 The database is set up with the initial SQL authentication "`seedba`"/"`<Secret_Password>`" and the _Entra ID_ user as alternative admin.
-Make sure to change the password in the script before using it.
+Make sure to change the password in the script before applying it.
 
 To get started on the VM, install the `sqlcmd` utility as described here by Microsoft:
 https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools
@@ -127,20 +131,22 @@ We recommand to use ssh port forwarding for initial configuration of the Install
 ## Cleanup
 
 After you finished your experiments, you can clean up (deletes everything!) with "`az group delete -n rg-seebis-x-x`".
+This is required to stop additional usage costs.
 
 
 ## Troubleshooting
 
 To validate connectivity with the Azure API and to list all existing resource groups, use `az group list -o table` for your default subscription.
 
-To debug the commands of the creation script, start it with `job=5 bash -x az-create-env-sql*.sh`.
+To trace the commands of the creation script, start it with `job=5 bash -x az-create-env-sql*.sh | tee -a logfile.txt`.
 
 From the VM command line you can use the `dig +short seebisdb-x-x.database.windows.net` command to list the name resolution results or the database private endpoint.
 It should eventuelly list a private IP from the DB subnet.
 
 Use the `nc -v seebisdb-test-1.database.windows.net 1433` command to check basic connectivity, and the `/opt/mssql-tools18/bin/sqlcmd -U seedba -S seebisdb-test-1.database.windows.net -X 1 -Q "select db_name()"` to validate the logins (will print "`master`" for `seedba` user and "`SEEASDB0`" for the owner and runtime users - after you have created them).
+The name of the SQL Managed Instance will have a server name which includes a random name component like `mi-seebis-test-2.abcdef.database.windows.net`.
 
-If you do not use ssh port forwarding to reach the installation server (`-L 8181:127.0.0.1:8181` parameter) you need to enable portal access to the running Installation Server.
+If you do not use SSH port forwarding to reach the installation server (`-L 8181:127.0.0.1:8181` parameter) you need to enable portal access to the running Installation Server.
 For this, remember to open incoming port 8443 in the _firewalld_ configuration of the EL9 host.
 You also need to create a new TLS certificate and enable the https listener on port 8443 in the Installation Server.
 
