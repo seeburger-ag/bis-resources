@@ -24,20 +24,20 @@ The database is reachable via a private endpoint, which is deployed in a dedicat
 
 By default the following is created:
 
-* `$tier` - Allows to have one resource group by tier (default `'test'`)
-* `$job` - optional suffix to make rg name unique (default `'1'` or `'2'`)
+* `$tier` - Allows to have one resource group by tier (default: `'test'`)
+* `$job` - optional suffix to make rg name unique (default:`'1'` or `'2'`)
 * `$location` - the region you want to create all of the resources (default: ``westeurope``)
-* `$tags` - allow to tag some resources with meta-data. (For some resources the `az` CLI does not work reliable, it is marked with "flaky" comment).
-Some resources do not allow to be tagged.
-* `$rg_name` - the name of the main resource group, includes tier and job (default: `'seebis-test-1'`)
+* `$tags` - allow to tag some resources with meta-data.
+Some resources cannot be tagged with the CLI.
+* `$rg_name` - the name of the main resource group, includes tier and job (default: `'rg-seebis-$tier-$job'`)
 * `$infra_rg_name` - alternative name for shared RG for DNS Zone (default: `$rg_name`)
-* `$sqldb_server_name` - The server used in URL (default `'seebisdb-test-1'`)
-* `$db_name` - The managed database name (default `'SEEASDB0'`)
-* `$admin_prefix` - The network prefixes to allow administrative access to SSH and portals.
+* `$sqldb_server_name` - The server used in URL (default: `'db-seebis-test-1'`)
+* `$db_name` - The managed database name (default: `'SEEASDB0'`)
+* `$admin_prefix` - The network prefixes array to allow administrative access to SSH and portals.
 Should be limited to your internet address or not used at all in production.
 (defaults to own ip/32)
 * `$admin_pass` - The initial dba password (SQL Authentication).
-Important to fill with new random one. (Unsecure default `'<Secret_Password>'`)
+Important to fill with new random one. (Unsecure default: `'<Secret_Password>'`)
 
 Further relevant settings are `vm_user`, `admin_sqluser` for the OS and SQL admin users.
 `vnet_name`, `vnet_prefix`, `bis_subnet_name`, `bis_subnet_prefix`, `db_subnet_name`, and `db_subnet_prefix` for the network names and IP ranges.
@@ -81,7 +81,7 @@ Execution takes at least half an hour (creation of MI step is slow).
 
 The script has the same configuration and execution logic as the `az-create-env-sqldb.sh`, but instead of a private endpoint, it directly generates the Managed Instance of SQL Server in the database subnet called `subnet-mi`.
 
-* `$sqlmi_server_name` - The SQL Managed Instance server name, used in URL (default `mi-seebis-test-2`).
+* `$sqlmi_server_name` - The SQL Managed Instance server name, used in URL (default: `mi-seebis-test-2`).
 The final fully qualified name of the server contains a random component, you need to look it up from the console.
 
 
@@ -117,15 +117,26 @@ https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools
 
 * go-sqlcmd release page: https://github.com/microsoft/go-sqlcmd/releases/
 
+The name of the database server uses the following patterns by defsult:
+
+* SQL Database: `db-seebis-$tier-$job.database.windows.net` (`$sqldb_server_name`)
+* SQL MI: `mi-seebis-$tier-$job.<random>.database.windows.net` (`$sqlmi_server_name`)
+
+The fully qualified domain name of the SQL Managed Instance will include a random subdomain string to make it unique, use the "`az sql mi show -g rg-seebis-test-2 -n mi-seebis-test-2`" command to look it up.
+
+Both names will alias to a unique name in the `privatelink.database.windows.net` private DNS zone.
+
+Find the SQL script templates to create the database users in the [`installation/systemdatase/mssql`](../../installation/systemdatabase/mssql) directory of this repository.
+
 
 **Installing the BIS Installation Server**
 
-If you want to use the Internet accessible portal option for the Installation Server, be sure to create a TLS certificate and enable the listener (port 8443).
+If you want to use the Internet exposed Web UI of the Installation Server (not reccomended), be sure to create a TLS certificate and enable the listener (port 8443).
 Alternatively you can use ssh port forwarding (port 22 is open) for the 8181 http port.
 By default only the public visible IP address of the host where the script was executed is allow listed in the NSG for SSH and portal administrative access.
-If you need more admin machines, modify `admin_prefix`.
+If you need more admin machines, modify the `$admin_prefix` array.
 
-We recommand to use ssh port forwarding for initial configuration of the Installation Server (http port 8181).
+We recommand to use SSH port forwarding for initial configuration of the Installation Server (http port 8181).
 
 
 ## Cleanup
@@ -140,15 +151,14 @@ To validate connectivity with the Azure API and to list all existing resource gr
 
 To trace the commands of the creation script, start it with `job=5 bash -x az-create-env-sql*.sh | tee -a logfile.txt`.
 
-From the VM command line you can use the `dig +short seebisdb-x-x.database.windows.net` command to list the name resolution results or the database private endpoint.
+From the VM command line you can use the `dig +short x-seebis-x-x.x.database.windows.net` command to list the name resolution results of the database private endpoint (replace actual name listed above)
 It should eventuelly list a private IP from the DB subnet.
 
-Use the `nc -v seebisdb-test-1.database.windows.net 1433` command to check basic connectivity, and the `/opt/mssql-tools18/bin/sqlcmd -U seedba -S seebisdb-test-1.database.windows.net -X 1 -Q "select db_name()"` to validate the logins (will print "`master`" for `seedba` user and "`SEEASDB0`" for the owner and runtime users - after you have created them).
-The name of the SQL Managed Instance will have a server name which includes a random name component like `mi-seebis-test-2.abcdef.database.windows.net`.
+Use the `nc -v <servername> 1433` command to check basic connectivity, and the `sqlcmd -U seedba -S <servername> -X 1 -Q "select db_name()"` to validate the logins (will print "`master`" for `seedba` user and "`SEEASDB0`" for the owner and runtime users - after you have created them).
 
 If you do not use SSH port forwarding to reach the installation server (`-L 8181:127.0.0.1:8181` parameter) you need to enable portal access to the running Installation Server.
 For this, remember to open incoming port 8443 in the _firewalld_ configuration of the EL9 host.
 You also need to create a new TLS certificate and enable the https listener on port 8443 in the Installation Server.
 
-By default EL9 comes with SELinux in enforcing mode, for quick testing we recommend to switch with the `sudo setenforce permissive` command.
+By default EL9 comes with _SELinux_ in enforcing mode, for quick testing we recommend to switch with the `sudo setenforce permissive` command.
 You otherwise get resource permission errors when starting the systemd service of the _Installation Server_.
