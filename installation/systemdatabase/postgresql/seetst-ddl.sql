@@ -51,7 +51,7 @@ COMMENT ON ROLE :runtime_user
  IS 'SEEBURGER BIS runtime user';
 
 ALTER ROLE :runtime_user IN DATABASE :database SET search_path = :schema;
--- runtime user executes queries in parallel, raise memory if available to redice temp files.
+-- runtime user executes queries in parallel, raise memory if available to reduce temp files.
 ALTER ROLE :runtime_user IN DATABASE :database SET work_mem = '16MB';
 
 GRANT CONNECT ON DATABASE :database TO :runtime_user,:owner_user;
