@@ -3,12 +3,12 @@
 --
 -- create-database.sql - Create Database for BIS 6.7 on SQL Server
 --
--- Revision 2024-09-23
+-- Revision 2025-11-27
 --
 -- You can execute this script in SSMS when enabling Query->sqlcmd mode
 -- this does NOT work for Azure SQL Database
 --
--- Copyright 2010-2024 SEEBURGER AG, Germany. All rights reserved.
+-- Copyright 2010-2025 SEEBURGER AG, Germany. All rights reserved.
 :on error exit
 
 -- configure names, password and location
@@ -40,7 +40,7 @@ if (@edid = 610778273 OR @edid = -2117995310)
 BEGIN print 'WARNING: Edition might not be licensed for production use ('+convert(nvarchar,@edid)+').'; END
 if (@eed <> 2 AND @eed <> 3)
 BEGIN print 'WARNING: Edition is not supported for full production use.'; END
-if (@sub <> '15.0.' AND @sub <> '16.0.')
+if (@sub <> '15.0.' AND @sub <> '16.0.' AND @sub <> '17.0.')
 BEGIN raiserror('FATAL: Not a supported SQL Server version.', 18, 1); END
 if (@eed < 1 OR @eed > 4) BEGIN raiserror('FATAL: Not a supported product edition', 18, 2); END
 GO

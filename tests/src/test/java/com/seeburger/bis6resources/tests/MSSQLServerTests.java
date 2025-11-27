@@ -52,7 +52,7 @@ class MSSQLServerTests
         System.out.println("Starting container...");
 
         // we do this here to not hide the fail reason in Initializer Exception
-        dbContainer = new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2022-latest"))
+        dbContainer = new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2025-latest"))
                 .acceptLicense();
 
         dbContainer.start();
