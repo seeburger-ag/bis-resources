@@ -13,6 +13,8 @@ before executing them against your database.
 
 ## Files
 
-The scripts are generally compatible with the `psql` client.
+The templates are generally compatible with the `psql` client.
 
 * seetst-ddl.sql - database, role and schema create template.
+* seetst-maintainer.sql - extra role for maintenance users.
+Can be used to schedule vaccuum, etc.
